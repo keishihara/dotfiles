@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+if [ "$(uname)" = Darwin ]; then
+    echo 'mac'
+    alias ll='gls -Flh --group-directories-first'
+    alias la='gls -Flha --group-directories-first'
+    alias l='gls -CF1 --group-directories-first'
+elif [ "$OSTYPE" = linux-gnu ]; then
+    echo 'linux'
+    alias ll='ls -Flh --group-directories-first'
+    alias la='ls -Flha --group-directories-first'
+    alias l='ls -CF1 --group-directories-first'
+fi
+
+alias ..='cd ..'
+alias ...='cd ../..'
+
+alias sb='source ~/.bashrc'
+alias vimbash='vim ~/.bashrc'
+alias sz='source ~/.zshrc'
+alias vimzsh='vim ~/.zshrc'
+
+alias smi='nvidia-smi -l 1'
+alias ta='tmux attach'
+alias restart_bluetooth='sudo modprobe -r btusb && sudo service bluetooth restart && sudo modprobe btusb'

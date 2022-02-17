@@ -1,0 +1,19 @@
+# This is Git's per-user configuration file.
+[user]
+	name = keishi_ishihara
+	email = keishi_ishihara@albert2005.co.jp
+[core]
+	editor = vim
+[alias]
+	s = status
+	ss = status -s
+	sh = show
+	a = add
+	co = commit
+	c = commit
+	d = diff
+[color]
+	ui = auto
+[help]
+	autocorrect = 1
+
