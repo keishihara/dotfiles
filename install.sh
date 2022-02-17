@@ -3,19 +3,22 @@
 function detect_shell() { echo ${SHELL##*/}; }
 function echo_header() { printf "\033[37;1m%s\033[m\n" "$*"; }
 function is_exists() { type "$1" >/dev/null 2>&1; return $?; }
+function _unlink() { unlink "$1" >/dev/null 2>&1; return $?; }
+function _mv() { mv "$1" >/dev/null 2>&1; return $?; }
+function _mkdir() { mkdir "$1" >/dev/null 2>&1; return $?; }
 
-unlink ~/.bashrc
-unlink ~/.zshrc
-unlink ~/.gitconfig
-unlink ~/.tmux.conf
-unlink ~/.aliases
+_unlink ~/.bashrc
+_unlink ~/.zshrc
+_unlink ~/.gitconfig
+_unlink ~/.tmux.conf
+_unlink ~/.aliases
 
-mkdir dotbackup
-mv ~/.bashrc dotbackup
-mv ~/.zshrc dotbackup
-mv ~/.gitconfig dotbackup
-mv ~/.tmux.conf dotbackup
-mv ~/.aliases dotbackup
+_mkdir dotbackup
+_mv ~/.bashrc dotbackup
+_mv ~/.zshrc dotbackup
+_mv ~/.gitconfig dotbackup
+_mv ~/.tmux.conf dotbackup
+_mv ~/.aliases dotbackup
 
 ln -s ~/dotfiles/.aliases ~
 ln -s ~/dotfiles/.gitconfig ~
@@ -30,4 +33,3 @@ elif [ "$(detect_shell)" = bash ]; then
 else
     echo_header "zsh and bash only supported: $(detect_shell)"
 fi
-
