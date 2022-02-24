@@ -98,7 +98,7 @@ alias sb='source ~/.bashrc'
 alias smi='nvidia-smi -l 1'
 alias vimbash='vim ~/.bashrc'
 alias ta='tmux attach'
-alias restart_bluetooth='sudo modprobe -r btusb && sudo service bluetooth restart && sudo modprobe btusb'
+# alias restart_bluetooth='sudo modprobe -r btusb && sudo service bluetooth restart && sudo modprobe btusb'
 
 
 # Add an "alert" alias for long running commands.  Use like so:
@@ -134,3 +134,4 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
+eval "$(pyenv init --path)" # needed on server
