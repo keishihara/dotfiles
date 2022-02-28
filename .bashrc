@@ -135,3 +135,8 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv init --path)" # needed on server
+
+# rootless docker config on remote server
+export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+
+echo '.bashrc sourced!'
