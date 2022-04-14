@@ -17,6 +17,9 @@ eval "$(pyenv init --path)"
 export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
 export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
 
+export PATH="$HOME/.pyenv/bin:$PATH"
+export PATH="/usr/local/bin:$PATH"
+
 
 #-----------------------------
 # alias
@@ -55,6 +58,7 @@ setopt auto_param_keys       # カッコの対応などを自動的に補完
 setopt magic_equal_subst     # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
 setopt complete_in_word      # 語の途中でもカーソル位置で補完
 setopt extended_glob         # 拡張グロブで補完(~とか^とか。例えばless *.txt~memo.txt ならmemo.txt 以外の *.txt にマッチ)
+setopt share_history
 setopt pushd_ignore_dups # remove dups in pushd
 
 bindkey 'tab' expand-or-complete-prefix
@@ -117,13 +121,23 @@ bindkey '^G' peco-cdr
 
 autoload -Uz colors
 colors
-PROMPT="%{${fg[cyan]}%}["$USER"] %1~%{${reset_color}%} %# " # PROMPT="%n@%m %1~ %# " # original
+PROMPT="%{${fg[cyan]}%}["$USER"] %~%{${reset_color}%} %# " # PROMPT="%n@%m %1~ %# " # original
+# PROMPT="%{${fg[cyan]}%}["$USER"] %1~%{${reset_color}%} %# " # PROMPT="%n@%m %1~ %# " # original
+
 
 #-----------------------------
 # tmux
 #-----------------------------
 
 tmux source ~/.tmux.conf
+
+
+#-----------------------------
+# misc
+#-----------------------------
+
+# do not create __pychache__
+export PYTHONDONTWRITEBYTECODE=1
 
 
 echo '.zshrc sourced!'
