@@ -92,12 +92,9 @@ setopt SHARE_HISTORY
 
 # peco
 function peco-history-selection() {
-    # BUFFER=`history -n 1 | tail -r  | awk '!a[$0]++' | peco`
     if which tac >/dev/null; then
-	echo "A"
         tac="tac"
     else
-	echo "B"
 	tac="tail -r"
     fi
     BUFFER=`history -n 1 | tac | awk '!a[$0]++' | peco`
