@@ -78,6 +78,8 @@ setopt auto_cd
 setopt auto_pushd
 # completion at the cursor
 setopt complete_in_word
+# .zsh_history path
+export HISTFILE=${HOME}/.zsh_history
 # save 1000 previous command histories
 export HISTSIZE=1000
 # do not add the same command as one executed right before
