@@ -134,7 +134,7 @@ bindkey '^G' peco-cdr
 
 autoload -Uz colors
 colors
-PROMPT="%{${fg[cyan]}%}["$USER"] %~%{${reset_color}%} %# " # PROMPT="%n@%m %1~ %# " # original
+PROMPT="%{${fg[cyan]}%}["$USER"@${HOST}] %~%{${reset_color}%} %# "
 # PROMPT="%{${fg[cyan]}%}["$USER"] %1~%{${reset_color}%} %# " # PROMPT="%n@%m %1~ %# " # original
 
 
