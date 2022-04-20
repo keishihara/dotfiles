@@ -38,7 +38,7 @@ fi
 # completion
 #-----------------------------
 
-_cache_hosts=(`ruby -ne 'if /^Host\s+(.+)$/; print $1.strip, "\n"; end' ~/.ssh/config`) # ssh,scp用ホスト追加
+# _cache_hosts=(`ruby -ne 'if /^Host\s+(.+)$/; print $1.strip, "\n"; end' ~/.ssh/config`) # ssh,scp用ホスト追加
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
   # auto_suggestion
@@ -78,15 +78,29 @@ setopt auto_cd
 setopt auto_pushd
 # completion at the cursor
 setopt complete_in_word
-# .zsh_history path
-export HISTFILE=${HOME}/.zsh_history
 # save 1000 previous command histories
 export HISTSIZE=1000
 # do not add the same command as one executed right before
 setopt hist_ignore_dups
+
+export HISTFILE=${HOME}/.history
+HISTSIZE=500000
+SAVEHIST=500000
+setopt appendhistory
+setopt INC_APPEND_HISTORY  
+setopt SHARE_HISTORY
+
 # peco
 function peco-history-selection() {
-    BUFFER=`history -n 1 | tail -r  | awk '!a[$0]++' | peco`
+    # BUFFER=`history -n 1 | tail -r  | awk '!a[$0]++' | peco`
+    if which tac >/dev/null; then
+	echo "A"
+        tac="tac"
+    else
+	echo "B"
+	tac="tail -r"
+    fi
+    BUFFER=`history -n 1 | tac | awk '!a[$0]++' | peco`
     CURSOR=$#BUFFER
     zle reset-prompt
 }
