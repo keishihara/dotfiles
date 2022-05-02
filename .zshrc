@@ -87,7 +87,7 @@ export HISTFILE=${HOME}/.history
 HISTSIZE=500000
 SAVEHIST=500000
 setopt appendhistory
-setopt INC_APPEND_HISTORY  
+setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY
 
 # peco
@@ -134,9 +134,14 @@ bindkey '^G' peco-cdr
 
 autoload -Uz colors
 colors
-PROMPT="%{${fg[cyan]}%}["$USER"@${HOST}] %~%{${reset_color}%} %# "
-# PROMPT="%{${fg[cyan]}%}["$USER"] %1~%{${reset_color}%} %# " # PROMPT="%n@%m %1~ %# " # original
-
+# PROMPT="%{${fg[cyan]}%}["$USER"@${HOST}] %~%{${reset_color}%} %# " # older
+_precmd() { _GIT_BRANCH=$(git branch --show-current 2>/dev/null); }
+precmd_functions+=( _precmd )
+# setopt prompt_subst
+export PROMPT='%F{cyan}%n%f@%F{magenta}%M%f %40<..<%~ %F{#FF8000}${_GIT_BRANCH}%f %F{green}%(!.#.❯)%f '
+# NOTE: some of PROMPT syntax:
+# - %F{color}SOMETHING%f will change the color of string SOMETHING.
+# - %N<..<SOMETHING will truncate SOMETHING if it is longer than N. (sorce: https://unix.stackexchange.com/a/369862)
 
 #-----------------------------
 # tmux
@@ -159,6 +164,14 @@ export PYTHONDONTWRITEBYTECODE=1
 export PATH="/usr/local/cuda/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 
+
+#-----------------------------
+# Other
+#-----------------------------
+
+# remove duplicate entries
+typeset -U PATH
+typeset -U precmd_functions # same as : set -A new_array `echo ${old_array[*]} | tr ' ' '\012' | sort -u`
 
 
 echo '.zshrc sourced!'
