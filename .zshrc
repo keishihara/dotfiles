@@ -141,10 +141,11 @@ _precmd() {
 }
 precmd_functions+=( _precmd )
 setopt prompt_subst # substitutes environmental variables in prompt with values
-export PROMPT='%F{cyan}%n%f@%F{magenta}%M%f %40<..<%~%F{#FF8000}${_GIT_BRANCH}%f %F{green}%(!.#.❯)%f '
+export PROMPT='%F{cyan}%n%f@%F{magenta}%M%f %F{027}%40<..<%~%f%F{#FF8000}${_GIT_BRANCH}%f %F{green}%(!.#.❯)%f '
 # NOTE: some of PROMPT syntax:
 # - %F{color}SOMETHING%f will change the color of string SOMETHING.
 # - %N<..<SOMETHING will truncate SOMETHING if it is longer than N. (sorce: https://unix.stackexchange.com/a/369862)
+
 
 #-----------------------------
 # tmux
