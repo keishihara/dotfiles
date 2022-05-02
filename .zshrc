@@ -137,7 +137,7 @@ colors
 # PROMPT="%{${fg[cyan]}%}["$USER"@${HOST}] %~%{${reset_color}%} %# " # older
 _precmd() { _GIT_BRANCH=$(git branch --show-current 2>/dev/null); }
 precmd_functions+=( _precmd )
-# setopt prompt_subst
+setopt prompt_subst # substitutes environmental variables in prompt with values
 export PROMPT='%F{cyan}%n%f@%F{magenta}%M%f %40<..<%~ %F{#FF8000}${_GIT_BRANCH}%f %F{green}%(!.#.❯)%f '
 # NOTE: some of PROMPT syntax:
 # - %F{color}SOMETHING%f will change the color of string SOMETHING.
