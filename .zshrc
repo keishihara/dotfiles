@@ -9,8 +9,8 @@
 #-----------------------------
 function detect_shell() { echo ${SHELL##*/}; }
 function echo_header() { printf "\033[37;1m%s\033[m\n" "$*"; }
-function echo_warning() { echo -e "\e[33;1mWARNING: $*\n\e[m"; }
-function echo_error() { echo -e "\e[31;1mERROR: $*\n\e[m"; }
+function echo_warning() { echo -e "\e[33;1mWARNING: $*\e[m"; }
+function echo_error() { echo -e "\e[31;1mERROR: $*\e[m"; }
 function is_exists() { type "$1" >/dev/null 2>&1; return $?; }
 
 # source: https://stackoverflow.com/a/3466183
@@ -65,10 +65,7 @@ fi
 
 if [ -f ~/.aliases_local ]; then
     source ~/.aliases_local
-else
-    echo_warning "~/.aliases_local not found"
 fi
-
 
 
 #-----------------------------
