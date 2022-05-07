@@ -7,6 +7,7 @@
 #-----------------------------
 # utils
 #-----------------------------
+
 function detect_shell() { echo ${SHELL##*/}; }
 function echo_header() { printf "\033[37;1m%s\033[m\n" "$*"; }
 function echo_warning() { echo -e "\e[33;1mWARNING: $*\e[m"; }
@@ -28,6 +29,7 @@ echo_header Hi $USER from .zshrc on ${machine}@$(hostname)
 #-----------------------------
 # pyenv
 #-----------------------------
+
 if type pyenv &>/dev/null; then
     # https://github.com/pyenv/pyenv/issues/1740#issuecomment-738749988
     export PYENV_ROOT="$HOME/.pyenv"
