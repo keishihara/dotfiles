@@ -47,9 +47,11 @@ if type pyenv &>/dev/null; then
         eval "$(pyenv init -)"
     else
         eval "$(pyenv init --path)"
+	# probably the two lines below only for mac
+	export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
+	export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
     fi
-    export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
-    export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
+
 else
     echo_warning "pyenv not found."
 fi
