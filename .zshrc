@@ -29,13 +29,12 @@ echo_header Hi $USER from .zshrc on ${machine}@$(hostname)
 #-----------------------------
 # pyenv
 #-----------------------------
-
+#
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
 if type pyenv &>/dev/null; then
     # https://github.com/pyenv/pyenv/issues/1740#issuecomment-738749988
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-    export PATH="/usr/local/bin:$PATH" # need this?
-
+    # export PATH="/usr/local/bin:$PATH" # need this?
     # Slice an array: https://stackoverflow.com/a/1336245
     pyenv_version=$(pyenv -v)
     pyenv_version=${pyenv_version[@]:6:7}
@@ -89,8 +88,9 @@ if type brew &>/dev/null; then # for mac
 
 elif [ ${machine} = Linux ]; then # for ubuntu
     # if not installed, run: git clone https://github.com/zsh-users/zsh-completions.git "${ZDOTDIR:-$HOME}/.zsh-completions"
-    autoload predict-on
-    predict-on
+
+    # autoload predict-on
+    # predict-on
 
     # auto completion
     if [ -d ~/.zsh-completions ]; then
@@ -117,11 +117,11 @@ elif [ ${machine} = Linux ]; then # for ubuntu
     fi
 
     # auto_suggestion
-    if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-        source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-    else
-        echo_warning "zsh-autosuggestions not installed. You might want to run: \n $ sudo apt install -y zsh-autosuggestions"
-    fi
+    # if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+    #     source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    # else
+    #     echo_warning "zsh-autosuggestions not installed. You might want to run: \n $ sudo apt install -y zsh-autosuggestions"
+    # fi
 
     autoload -Uz compinit
     compinit
