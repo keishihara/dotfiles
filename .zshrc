@@ -87,6 +87,7 @@ if type brew &>/dev/null; then # for mac
 
 elif [ ${machine} = Linux ]; then # for ubuntu
     # if not installed, run: git clone https://github.com/zsh-users/zsh-completions.git "${ZDOTDIR:-$HOME}/.zsh-completions"
+
     # autoload predict-on
     # predict-on
 
@@ -115,11 +116,11 @@ elif [ ${machine} = Linux ]; then # for ubuntu
     fi
 
     # auto_suggestion
-    if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-        source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-    else
-        echo_warning "zsh-autosuggestions not installed. You might want to run: \n $ sudo apt install -y zsh-autosuggestions"
-    fi
+    # if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+    #     source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    # else
+    #     echo_warning "zsh-autosuggestions not installed. You might want to run: \n $ sudo apt install -y zsh-autosuggestions"
+    # fi
 
     autoload -Uz compinit
     compinit
@@ -171,8 +172,8 @@ setopt appendhistory
 setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY
 
-# zstyle ':completion:*:default' menu select=2
-# zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*:default' menu select=2
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 # cdr自体の設定
 if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]]; then
     autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
