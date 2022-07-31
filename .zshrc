@@ -29,13 +29,11 @@ echo_header Hi $USER from .zshrc on ${machine}@$(hostname)
 #-----------------------------
 # pyenv
 #-----------------------------
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
 
 if type pyenv &>/dev/null; then
     # https://github.com/pyenv/pyenv/issues/1740#issuecomment-738749988
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-    export PATH="/usr/local/bin:$PATH" # need this?
-
     # Slice an array: https://stackoverflow.com/a/1336245
     pyenv_version=$(pyenv -v)
     pyenv_version=${pyenv_version[@]:6:7}
@@ -89,8 +87,8 @@ if type brew &>/dev/null; then # for mac
 
 elif [ ${machine} = Linux ]; then # for ubuntu
     # if not installed, run: git clone https://github.com/zsh-users/zsh-completions.git "${ZDOTDIR:-$HOME}/.zsh-completions"
-    autoload predict-on
-    predict-on
+    # autoload predict-on
+    # predict-on
 
     # auto completion
     if [ -d ~/.zsh-completions ]; then
@@ -139,7 +137,9 @@ setopt auto_param_keys       # カッコの対応などを自動的に補完
 setopt magic_equal_subst     # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
 setopt complete_in_word      # 語の途中でもカーソル位置で補完
 setopt extended_glob         # 拡張グロブで補完(~とか^とか。例えばless *.txt~memo.txt ならmemo.txt 以外の *.txt にマッチ)
-setopt share_history
+# setopt share_history
+setopt no_share_history
+unsetopt share_history
 setopt pushd_ignore_dups # remove dups in pushd
 
 bindkey 'tab' expand-or-complete-prefix
