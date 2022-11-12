@@ -6,9 +6,9 @@ elif [ "$OSTYPE" = linux-gnu ]; then
     alias ls='ls --color=auto'
 fi
 
-alias ll='ls -Flh --group-directories-first'
-alias la='ls -Flha --group-directories-first'
-alias l='ls -CF1 --group-directories-first'
+alias ll='ls -Flh --group-directories-first --color=auto'
+alias la='ls -Flha --group-directories-first --color=auto'
+alias l='ls -CF1 --group-directories-first --color=auto'
 
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -25,3 +25,7 @@ alias vimzsh='vim ~/.zshrc'
 alias smi='nvidia-smi -l 1'
 alias ta='tmux attach'
 alias restart_bluetooth='sudo modprobe -r btusb && sudo service bluetooth restart && sudo modprobe btusb'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
