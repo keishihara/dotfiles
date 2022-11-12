@@ -1,3 +1,11 @@
+export DOCKER_HOST="unix:///run/user/10008/docker.sock"
+
+if [ -d /tmp/$USER ]; then
+    mkdir -p /tmp/$USER
+fi
+export TMPDIR=/tmp/$USER
+
+
 # ~/.bashrc: executed by bash(2) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -138,5 +146,14 @@ eval "$(pyenv init --path)" # needed on server
 
 # rootless docker config on remote server
 export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+
+# export PATH=/home/keishi_ishihara/.linuxbrew/opt/python@3.8/bin:$PATH
+
+# delete duplicate paths in PATH
+export PATH=$(printf %s "$PATH" | awk -v RS=: -v ORS=: '!arr[$0]++')
+
+
+# export PATH=/usr/local/cuda/bin:/home/keishi_ishihara/.linuxbrew/bin:/home/keishi_ishihara/.linuxbrew/sbin:/home/keishi_ishihara/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:
+
 
 echo '.bashrc sourced!'
