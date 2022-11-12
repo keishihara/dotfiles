@@ -95,31 +95,13 @@ fi
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# some more ls aliases
-alias ll='ls -alF --group-directories-first'
-alias la='ls -A'
-alias l='ls -CF1 --group-directories-first'
-# some more other aliases
-alias ..='cd ..'
-alias ...='cd ../..'
-alias sb='source ~/.bashrc'
-alias smi='nvidia-smi -l 1'
-alias vimbash='vim ~/.bashrc'
-alias ta='tmux attach'
-# alias restart_bluetooth='sudo modprobe -r btusb && sudo service bluetooth restart && sudo modprobe btusb'
-
-
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+# Import aliases
+if [ -f ~/.aliases ]; then
+    . ~/.aliases
 fi
 
 # enable programmable completion features (you don't need to enable
@@ -139,21 +121,30 @@ export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
 # For pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv init --path)" # needed on server
+if type pyenv &>/dev/null; then
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init -)"
+    eval "$(pyenv init --path)" # needed on server
+else
+    echo "pyenv not found."
+fi
 
 # rootless docker config on remote server
 export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+
+# For Linuxbrew
+if [ -f ~/.linuxbrew/bin/brew ]; then
+    export PATH="${HOME}/.linuxbrew/bin:$PATH"
+else
+    echo "Homebrew(linuxbrew) not found under ~/.linuxbrew/bin/brew"
+    echo "see https://albert.growi.cloud/61372d37230ef5004b0557cc#%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%83%9E%E3%83%8D%E3%83%BC%E3%82%B8%E3%83%A3%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"
+fi
 
 # export PATH=/home/keishi_ishihara/.linuxbrew/opt/python@3.8/bin:$PATH
 
 # delete duplicate paths in PATH
 export PATH=$(printf %s "$PATH" | awk -v RS=: -v ORS=: '!arr[$0]++')
-
-
-# export PATH=/usr/local/cuda/bin:/home/keishi_ishihara/.linuxbrew/bin:/home/keishi_ishihara/.linuxbrew/sbin:/home/keishi_ishihara/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:
 
 
 echo '.bashrc sourced!'
