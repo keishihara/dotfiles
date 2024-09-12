@@ -1,7 +1,7 @@
 # This is Git's per-user configuration file.
 [user]
-	name = keishi_ishihara
-	email = keishi_ishihara@albert2005.co.jp
+	name = keishi.ishihara
+	email = keishi.ishihara@accenture.com
 [core]
 	editor = vim
 [alias]
@@ -12,6 +12,7 @@
 	co = commit
 	c = commit
 	d = diff
+	tree = log --graph --pretty=format:\"%x09%C(auto) %h %Cgreen %ar %Creset%x09by\\\"%C(cyan ul)%an%Creset\\\" %x09%C(auto)%s %d\"
 [color]
 	ui = auto
 [help]
@@ -22,3 +23,8 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[init]
+	defaultBranch = main
+[credential]
+	helper = !aws codecommit credential-helper $@
+	UseHttpPath = true
