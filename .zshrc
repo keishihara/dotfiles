@@ -101,7 +101,7 @@ setopt prompt_subst
 source ${DOTFILES:-$HOME/dotfiles}/common/git_info.rc
 source ${DOTFILES:-$HOME/dotfiles}/common/prompt.rc
 
-# Note: a one liner for displaying available colors
+# Hint: a one liner for displaying available colors
 # $ for c in {000..255}; do echo -n "\e[38;5;${c}m $c" ; [ $(($c%16)) -eq 15 ] && echo;done;echo
 
 PROMPT=''
