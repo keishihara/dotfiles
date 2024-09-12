@@ -1,259 +1,160 @@
-# .zshrc
-#   zshenv
-#   -> zprofile (if login shell)
-#   -> zshrc (if interactive shell)
+# Order of zsh-related config files loaded in **login shell**
+# 1. /etc/zshenv
+# 2. {$ZDOTDIR:-$HOME}/.zshenv <- where ZDOTDIR could be defined
+# 3. /etc/zprofile
+# 4. {$ZDOTDIR:-$HOME}/.zprofile
+# 5. /etc/zshrc
+# 6. {$ZDOTDIR:-$HOME}/.zshrc
+# 7. /etc/zlogin
+# 8. {$ZDOTDIR:-$HOME}/.zlogin
 
 
-source .utils
-echo_header Hi $USER from .zshrc on ${machine}@$(hostname)
+function __echo_header() { printf "\033[37;1m%s\033[m\n" "$*"; }
+function __echo_warning() { echo -e "\e[33;1mWARNING: $*\e[m"; }
+function __echo_error() { echo -e "\e[31;1mERROR: $*\e[m"; }
+function __exists() { type "$1" >/dev/null 2>&1; return $?; }
+function __pathadd() { export PATH="$1:$PATH" }
 
 
-#-----------------------------
-# pyenv
-#-----------------------------
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
+# ==================== #
+#    Plugin manager    #
+# ==================== #
 
-if type pyenv &>/dev/null; then
-    # https://github.com/pyenv/pyenv/issues/1740#issuecomment-738749988
-    # Slice an array: https://stackoverflow.com/a/1336245
-    pyenv_version=$(pyenv -v)
-    pyenv_version=${pyenv_version[@]:6:7}
-    pyenv_version=${pyenv_version//./ }
-    pyenv_major_version=${pyenv_version[1]}
-    pyenv_minor_version=${pyenv_version[3]}
-    if [ $pyenv_major_version -eq 1 ]; then
-        # if pyenv == 1.x
-        eval "$(pyenv init -)"
-    else
-        eval "$(pyenv init --path)"
-	# probably the two lines below only for mac
-	export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
-	export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
-    fi
+# Set the directory we want to store zinit and plugins
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
-else
-    echo_warning "pyenv not found."
+# Download Zinit, if it's not there yet
+if [ ! -d "$ZINIT_HOME" ]; then
+   mkdir -p "$(dirname $ZINIT_HOME)"
+   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 
-
-#-----------------------------
-# alias
-#-----------------------------
-
-if [ -f ~/.aliases ]; then
-    source ~/.aliases
-else
-    echo_warning "~/.aliases not found"
-fi
-
-if [ -f ~/.aliases_local ]; then
-    source ~/.aliases_local
-fi
+# Source/Load zinit
+source "${ZINIT_HOME}/zinit.zsh"
 
 
-#-----------------------------
-# zsh configurations
-#-----------------------------
+# ==================== #
+#    Plugins list      #
+# ==================== #
 
-# NOTE: zsh-autosuggestions and zsh-completion look similar, but both installed
+# Add in zsh plugins
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-completions
+zinit light Aloxaf/fzf-tab
 
-# _cache_hosts=(`ruby -ne 'if /^Host\s+(.+)$/; print $1.strip, "\n"; end' ~/.ssh/config`) # ssh,scp用ホスト追加
-if type brew &>/dev/null; then # for mac
-    # auto completion
-    FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
-    # auto_suggestion
-    source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-    autoload -Uz compinit
-    compinit
+# Fish-like history search pt. 1: pressing ↑ will search through history
+zinit light zsh-users/zsh-history-substring-search
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND=''
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND=''
+HISTORY_SUBSTRING_SEARCH_FUZZY='true'
 
-elif [ ${machine} = Linux ]; then # for ubuntu
-    # if not installed, run: git clone https://github.com/zsh-users/zsh-completions.git "${ZDOTDIR:-$HOME}/.zsh-completions"
+# Fish-like history search pt. 2: the grayed out part
+zinit light zsh-users/zsh-autosuggestions
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 
-    # autoload predict-on
-    # predict-on
+# Add in snippets
+zinit snippet OMZP::git
+zinit snippet OMZP::sudo
+zinit snippet OMZP::brew
 
-    # auto completion
-    if [ -d ~/.zsh-completions ]; then
-        FPATH=${ZDOTDIR:-$HOME}/.zsh-completions/src:$FPATH
-    else
-        echo_warning "zsh-completions not installed. You might want to run: \n $ git clone https://github.com/zsh-users/zsh-completions.git "${ZDOTDIR:-$HOME}/.zsh-completions""
-    fi
+# Load completions
+autoload -U compinit && compinit
 
-    # syntax-highlighting
-    if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-        source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-    else
-        echo_warning "zsh-syntax-highlighting not installed."
-    fi
-
-    # history search: https://github.com/zsh-users/zsh-history-substring-search#usage
-    if [ -d ~/.zsh-history-substring-search ]; then
-        source ${ZDOTDIR:-$HOME}/.zsh-history-substring-search/zsh-history-substring-search.zsh
-        bindkey '^[[A' history-substring-search-up
-        bindkey '^[[B' history-substring-search-down
-    else
-        echo_warning "zsh-history-substring-search is not installed. See https://github.com/zsh-users/zsh-history-substring-search"
-        # git clone https://github.com/zsh-users/zsh-history-substring-search.git "${ZDOTDIR:-$HOME}/.zsh-history-substring-search"
-    fi
-
-    # auto_suggestion
-    # if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-    #     source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-    # else
-    #     echo_warning "zsh-autosuggestions not installed. You might want to run: \n $ sudo apt install -y zsh-autosuggestions"
-    # fi
-
-    autoload -Uz compinit
-    compinit
-fi
-
-# 補完で小文字でも大文字にマッチさせる
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-# 補完候補一覧をカラー表示
-zstyle ':completion:*' list-colors ''
-setopt list_packed           # 補完候補を詰めて表示
-setopt auto_param_slash      # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
-setopt list_types            # 補完候補一覧でファイルの種別を識別マーク表示 (訳注:ls -F の記号)
-setopt auto_menu             # 補完キー連打で順に補完候補を自動で補完
-setopt auto_param_keys       # カッコの対応などを自動的に補完
-setopt magic_equal_subst     # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
-setopt complete_in_word      # 語の途中でもカーソル位置で補完
-setopt extended_glob         # 拡張グロブで補完(~とか^とか。例えばless *.txt~memo.txt ならmemo.txt 以外の *.txt にマッチ)
-# setopt share_history
-setopt pushd_ignore_dups # remove dups in pushd
-
-bindkey 'tab' expand-or-complete-prefix
-zstyle ':autocomplete:*' widget-style menu-select
-
-# enable cdr
-autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
-add-zsh-hook chpwd chpwd_recent_dirs
-# cdrコマンドで履歴にないディレクトリにも移動可能に
-zstyle ":chpwd:*" recent-dirs-default true
-zstyle ':chpwd:*' recent-dirs-max 500
-zstyle ':chpwd:*' recent-dirs-default true
-
-# change directory without cd command
-setopt auto_cd
-# cd - to show previsouly visited directories
-setopt auto_pushd
-# completion at the cursor
-setopt complete_in_word
-# save 1000 previous command histories
-export HISTSIZE=1000
-# do not add the same command as one executed right before
-setopt hist_ignore_dups
-
-export HISTFILE=${HOME}/.history
-HISTSIZE=500000
-SAVEHIST=500000
-setopt appendhistory
-setopt INC_APPEND_HISTORY
-# setopt SHARE_HISTORY
-
-zstyle ':completion:*:default' menu select=2
+# Completion styling
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-# cdr自体の設定
-if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]]; then
-    autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
-    add-zsh-hook chpwd chpwd_recent_dirs
-    zstyle ':completion:*' recent-dirs-insert fallback
-    zstyle ':chpwd:*' recent-dirs-default true
-    zstyle ':chpwd:*' recent-dirs-max 1000
-    zstyle ':chpwd:*' recent-dirs-file "$HOME/.cache/chpwd-recent-dirs"
-    zstyle ':chpwd:*' recent-dirs-pushd true
-    zstyle ':completion:*:*:cdr:*:*' menu selection
-fi
-# peco
-if type peco &>/dev/null; then
+# zstyle ':completion:*' menu select
+zstyle ':completion:*:setopt:*' menu true select
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-    function peco-history-selection() {
-        if which tac >/dev/null; then
-            tac="tac"
-        else
-        tac="tail -r"
-        fi
-        BUFFER=`history -n 1 | tac | awk '!a[$0]++' | peco`
-        CURSOR=$#BUFFER
-        zle reset-prompt
-    }
-    zle -N peco-history-selection
-    bindkey '^r' peco-history-selection
 
-    # ctrl + f で過去に移動したことのあるディレクトリを選択できるようにする。
-    function peco-cdr () {
-    local selected_dir="$(cdr -l | sed 's/^[0-9]\+ \+//' | peco --prompt="cdr >" --query "$LBUFFER")"
-    if [ -n "$selected_dir" ]; then
-        BUFFER="cd `echo $selected_dir | awk '{print$2}'`"
-        CURSOR=$#BUFFER
-        zle reset-prompt
-    fi
-    }
-    zle -N peco-cdr
-    bindkey '^f' peco-cdr
+# Keybindings
+bindkey -e # disable vi keybindings
+bindkey -s "®" 'source ~/.zshrc^M' # option + r to run `source ~/.zshrc`
 
+
+# History
+HISTSIZE=100000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+HISTDUP=erase
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_ignore_dups
+setopt hist_find_no_dups
+
+
+# ==================== #
+#        Prompt        #
+# ==================== #
+
+# Enable substitution in the prompt.
+autoload -U colors && colors
+setopt prompt_subst
+
+source ${DOTFILES:-$HOME/dotfiles}/common/git_info.rc
+source ${DOTFILES:-$HOME/dotfiles}/common/prompt.rc
+
+# Note: a one liner for displaying available colors
+# $ for c in {000..255}; do echo -n "\e[38;5;${c}m $c" ; [ $(($c%16)) -eq 15 ] && echo;done;echo
+
+PROMPT=''
+# PROMPT+='%F{189}%K{000}[%n@%m]%f%k ' # Display the username followed by @ and hostname in yellow
+PROMPT+='%F{099}[%n]%f ' # Display the username followed by @ and hostname in yellow
+PROMPT+='%F{blue} $(__shorten_path)%f' # Display the current working directory in blue
+PROMPT+='%F{cyan}$(__git_info)%f ' # Display the vcs info in red
+PROMPT+='%(?.%F{green}❯ .%F{red}❯ )' # Display a green prompt if the last command succeeded, or red if it failed
+PROMPT+='%f' # Reset the text color
+
+# ======================== #
+#   Integrations and vars  #
+# ======================== #
+
+# Shell integrations
+source <(fzf --zsh) # enable fuzzy find
+eval "$(zoxide init zsh --hook prompt )" # enable zoxide
+
+# Homebrew (assuming installed at /opt/homebrew)
+if [ "$(uname)" = Darwin ] && [ -f /opt/homebrew/bin/brew ]; then
+    eval $(/opt/homebrew/bin/brew shellenv)
 else
-    echo_warning "peco is not installed."
+    __echo_error Homebrew installation does not exist.
 fi
 
-
-#-----------------------------
-# prompt
-#-----------------------------
-
-autoload -Uz colors
-colors
-# PROMPT="%{${fg[cyan]}%}["$USER"@${HOST}] %~%{${reset_color}%} %# " # older
-_precmd() {
-  _GIT_BRANCH="$(git branch --show-current 2>/dev/null)"
-  [ -n "$_GIT_BRANCH" ] && _GIT_BRANCH=" $_GIT_BRANCH"
-}
-precmd_functions+=( _precmd )
-setopt prompt_subst # substitutes environmental variables in prompt with values
-export PROMPT='%F{cyan}%n%f@%F{magenta}%M%f %F{027}%40<..<%~%f%F{#FF8000}${_GIT_BRANCH}%f %F{green}%(!.#.❯)%f '
-# NOTE: some of PROMPT syntax:
-# - %F{color}SOMETHING%f will change the color of string SOMETHING.
-# - %N<..<SOMETHING will truncate SOMETHING if it is longer than N. (sorce: https://unix.stackexchange.com/a/369862)
-
-
-#-----------------------------
-# tmux
-#-----------------------------
-
-tmux source ~/.tmux.conf
-
-
-#-----------------------------
-# misc
-#-----------------------------
-
-# do not create __pychache__
-export PYTHONDONTWRITEBYTECODE=1
-
-
-#-----------------------------
 # CUDA
-#-----------------------------
-
 if [ -L /usr/local/cuda ] || [ -d /usr/local/cuda ]; then
     export PATH="/usr/local/cuda/bin:$PATH"
     export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
+else
+    if [ ! "$(uname)" = Darwin ]; then
+        __echo_error "CUDA installation not found."
+    fi
 fi
 
+# Pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if __exists pyenv; then
+    eval "$(pyenv init --path)"
+    eval "$(pyenv init -)"
+else
+    __echo_error "pyenv not found."
+fi
 
-#-----------------------------
-# Other
-#-----------------------------
+export PYTHONDONTWRITEBYTECODE=1 # do not create __pychache__
 
-# remove duplicate entries
-typeset -U PATH
-typeset -U precmd_functions # same as : set -A new_array `echo ${old_array[*]} | tr ' ' '\012' | sort -u`
-
-# do not share command history
-unsetopt share_history
-setopt no_share_history
+typeset -U path PATH # delete dups in PATH
 
 
-echo
-echo '.zshrc sourced!'
+# =========== #
+#   Aliases   #
+# =========== #
+
+alias cd="z"
+source $DOTFILES/common/aliases.rc

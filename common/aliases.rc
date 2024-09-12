@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+function __detect_shell() { echo ${SHELL##*/}; }
+function __echo_header() { printf "\033[37;1m%s\033[m\n" "$*"; }
+function __echo_warning() { echo -e "\e[33;1mWARNING: $*\e[m"; }
+function __echo_error() { echo -e "\e[31;1mERROR: $*\e[m"; }
+function __exists() { type "$1" >/dev/null 2>&1; return $?; }
+
+
+if [ "$(uname)" = Darwin ]; then
+    if __exists gls; then
+        alias ls='gls --color=auto'
+        alias ll='ls -Flh --group-directories-first --color=auto'
+        alias la='ls -Flha --group-directories-first --color=auto'
+        alias l='ls -CF1 --group-directories-first --color=auto'
+    else
+        __echo_warning "gls not found, which is recommended on macOS (to install, run $ brew install coreutils). ls is used temporally."
+        alias ls='ls --color=auto'
+        alias ll='ls -Flh --color=auto'
+        alias la='ls -Flha --color=auto'
+        alias l='ls -CF1 --color=auto'
+    fi
+
+elif [ "$OSTYPE" = linux-gnu ]; then
+    alias ls='ls --color=auto'
+fi
+
+alias ..='cd ..'
+alias ...='cd ../..'
+
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+if [ "$(__detect_shell)" = bash ]; then
+    alias sb='source ~/.bashrc'
+    alias vimbash='vim ~/.bashrc'
+elif [ "$(__detect_shell)" = zsh ]; then
+    alias sz='source ~/.zshrc'
+    alias vimzsh='vim ~/.zshrc'
+else
+    __echo_header "zsh and bash are only supported: $(__detect_shell)"
+fi
+
+alias smi='nvidia-smi -l 1'
+alias ta='tmux attach'
+alias restart_bluetooth='sudo modprobe -r btusb && sudo service bluetooth restart && sudo modprobe btusb'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+alias relogin='exec $SHELL -l'

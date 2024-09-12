@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Function to shorten the current directory path
+__shorten_path() {
+    # Get the full path of the current directory
+    local full_path="${PWD}"
+
+    # Replace the home directory path with "~"
+    full_path="${full_path/#$HOME/~}"
+
+    # Set the maximum display length (e.g., 30 characters)
+    local max_length=30
+
+    # If the path length does not exceed max_length, display it as is
+    if [[ ${#full_path} -le $max_length ]]; then
+        echo "$full_path"
+    else
+        # If the path is too long, shorten it to .../current_directory_name format
+        echo "../${full_path##*/}"
+    fi
+}
