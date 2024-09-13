@@ -69,6 +69,44 @@ function __git_symbols() {
 }
 
 
+function __git_status_info {
+
+    local status_symbols=''
+
+    # Check local status
+    local git_status=$(git status --porcelain --untracked-files=all 2>/dev/null)
+
+    if [[ -n $(echo "$git_status" | grep '^.[M]') ]]; then
+      status_symbols="${status_symbols}*"  # modified files
+    fi
+    if [[ -n $(echo "$git_status" | grep '^M') ]]; then
+      status_symbols="${status_symbols}+"  # staged files
+    fi
+    if [[ -n $(echo "$git_status" | grep '^??') ]]; then
+      status_symbols="${status_symbols}?"  # untracked files
+    fi
+    if [[ -n $(echo "$git_status" | grep '^.[D]') ]]; then
+      status_symbols="${status_symbols}×" # deleted files
+    fi
+
+    # Check remote status
+    local ahead=$(git rev-list --left-right --count @{u}...HEAD 2>/dev/null | awk '{print $1}')
+    local behind=$(git rev-list --left-right --count HEAD...@{u} 2>/dev/null | awk '{print $2}')
+
+    if [ "$ahead" -gt 0 ] && [ "$behind" -gt 0 ]; then
+      status_symbols="${status_symbols} ⇅"  # diverse
+    elif [ "$ahead" -gt 0 ]; then
+      status_symbols="${status_symbols} ↑"  # can be pushed
+    elif [ "$behind" -gt 0 ]; then
+      status_symbols="${status_symbols} ↓"  # can be pulled
+    elif git rev-parse --abbrev-ref @{u} >/dev/null 2>&1; then
+      status_symbols="${status_symbols} ✔"  # synced with remote
+    fi
+
+    echo "${status_symbols}"
+}
+
+
 # Function to display Git status with symbols
 function __git_info() {
     local git_info=''
@@ -81,7 +119,8 @@ function __git_info() {
             git_info+=" $git_branch_name"
         fi
         # Get the Git status
-        git_info+="$(__git_symbols)"
+        # git_info+="$(__git_symbols)"
+        git_info+="$(__git_status_info)"
         echo " ($git_info)"
     fi
 }
