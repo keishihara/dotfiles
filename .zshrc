@@ -32,15 +32,22 @@ fi
 # Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
-
 # ==================== #
 #    Plugins list      #
 # ==================== #
 
+# Enable cache
+zinit ice wait'!0' lucid cache
+# zinit load plugin/repository
+
+# Load completions
+autoload -U compinit
+compinit -C  # skip security checking. Without -C option it'll take so long here
+
 # Add in zsh plugins
+zinit light Aloxaf/fzf-tab # This must be loaded after compinit and before other pulugins
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
-zinit light Aloxaf/fzf-tab
 
 # Fish-like history search pt. 1: pressing ↑ will search through history
 zinit light zsh-users/zsh-history-substring-search
@@ -58,9 +65,6 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 zinit snippet OMZP::git
 zinit snippet OMZP::sudo
 zinit snippet OMZP::brew
-
-# Load completions
-autoload -U compinit && compinit
 
 # Completion styling
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
