@@ -10,6 +10,7 @@ _mkdir backup
 
 for dotfile in "${DOTFILES}"/.??* ; do
     [[ "$dotfile" == "${DOTFILES}/.git" ]] && continue
+    [[ "$dotfile" == "${DOTFILES}/.gitignore" ]] && continue
     [[ "$dotfile" == "${DOTFILES}/.github" ]] && continue
     [[ "$dotfile" == "${DOTFILES}/.DS_Store" ]] && continue
 
