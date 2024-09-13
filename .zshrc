@@ -68,17 +68,27 @@ zinit snippet OMZP::brew
 
 # Completion styling
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+# set list-colors to enable filename colorizing
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-# zstyle ':completion:*' menu select
-zstyle ':completion:*:setopt:*' menu true select
+# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+zstyle ':completion:*' menu no
+# zstyle ':completion:*:setopt:*' menu true select
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
+# copied from: https://github.com/Aloxaf/fzf-tab?tab=readme-ov-file#configure
+# disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
+# set descriptions format to enable group support
+# NOTE: don't use escape sequences here, fzf-tab will ignore them
+zstyle ':completion:*:descriptions' format '[%d]'
+# preview directory's content with eza when completing cd
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+# switch group using `<` and `>`
+zstyle ':fzf-tab:*' switch-group '<' '>'
 
-# Keybindings
-bindkey -e # disable vi keybindings
-bindkey -s "®" 'source ~/.zshrc^M' # option + r to run `source ~/.zshrc`
-
+# for tmux
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
 # History
 HISTSIZE=100000
@@ -92,6 +102,36 @@ setopt hist_ignore_all_dups
 setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
+
+
+
+# ===================== #
+#      Keybindings      #
+# ===================== #
+
+bindkey -e # disable vi keybindings
+bindkey -s "®" 'source ~/.zshrc^M' # option + r to run `source ~/.zshrc`
+
+# https://gist.github.com/junegunn/f4fca918e937e6bf5bad?permalink_comment_id=2981199#gistcomment-2981199
+gli() {
+  local filter
+  if [ -n $@ ] && [ -f $@ ]; then
+    filter="-- $@"
+  fi
+
+  git log \
+    --graph --color=always --abbrev=7 --format='%C(auto)%h %an %C(blue)%s %C(yellow)%cr' $@ | \
+    fzf \
+      --ansi --no-sort --reverse --tiebreak=index \
+      --preview "f() { set -- \$(echo -- \$@ | grep -o '[a-f0-9]\{7\}'); [ \$# -eq 0 ] || git show --color=always \$1 $filter; }; f {}" \
+      --bind "ctrl-j:down,ctrl-k:up,alt-j:preview-down,alt-k:preview-up,ctrl-f:preview-page-down,ctrl-b:preview-page-up,q:abort,ctrl-m:execute:
+                (grep -o '[a-f0-9]\{7\}' | head -1 |
+                xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                {}
+                FZF-EOF" \
+      --preview-window=right:60% \
+      --height 80%
+}
 
 
 # ==================== #
@@ -115,6 +155,7 @@ PROMPT+='%F{blue} $(__shorten_path)%f' # Display the current working director
 PROMPT+='%F{cyan}$(__git_info)%f ' # Display the vcs info in red
 PROMPT+='%(?.%F{green}❯ .%F{red}❯ )' # Display a green prompt if the last command succeeded, or red if it failed
 PROMPT+='%f' # Reset the text color
+
 
 # ======================== #
 #   Integrations and vars  #
