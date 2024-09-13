@@ -17,7 +17,34 @@ for dotfile in "${DOTFILES}"/.??* ; do
     filename=$(basename "$dotfile")
     _unlink "$HOME"/"$filename"
     _mv "$HOME"/"$filename" backup
-    ln -fnsv "$dotfile" "$HOME"
+    ln -insv "$dotfile" "$HOME"
 done
 
-# exec $SHELL -l
+
+# Settings that separate installation required
+
+# ================ #
+#      VSCode      #
+# ================ #
+
+# Hint: run command below to update extension list
+# code --list-extensions > extensions.txt
+
+if [ -e ~/Library/Application\ Support/Code/User ]; then
+    # Only when VSCode installation is found
+    cd ~/Library/Application\ Support/Code/User
+
+    mv settings.json settings.json.bak
+    mv keybindings.json keybindings.json.bak
+    mv snippets snippets.bak
+
+    ln -insv ${DOTFILES}/app/vscode/settings.json
+    ln -insv ${DOTFILES}/app/vscode/keybindings.json
+    ln -insv ${DOTFILES}/app/vscode/snippets.json
+
+    for extension in `cat ${DOTFILES}/app/vscode/extensions.txt`; do
+        code --install-extension $extension
+    done
+else
+    echo "Skip installing VSCode settings as VSCode is not installed."
+fi
