@@ -1,3 +1,4 @@
+#!/bin/bash
 # taken from: https://github.com/tarneaux/.f/blob/master/zsh/.config/zsh/git_info.zsh
 
 function __git_symbols() {
@@ -79,7 +80,7 @@ function __git_status_info {
     if [[ -n $(echo "$git_status" | grep '^.[M]') ]]; then
       status_symbols="${status_symbols}*"  # modified files
     fi
-    if [[ -n $(echo "$git_status" | grep '^M') ]]; then
+    if [[ -n $(echo "$git_status" | grep '^[MAR]') ]]; then
       status_symbols="${status_symbols}+"  # staged files
     fi
     if [[ -n $(echo "$git_status" | grep '^??') ]]; then
@@ -95,13 +96,13 @@ function __git_status_info {
     read -d "\n" -r ahead behind <<< $(echo "$git_status_v" | grep "^# branch.ab" | grep -o -E '[+-][0-9]+' | sed 's/[-+]//')
 
     if [ "$ahead" -gt 0 ] && [ "$behind" -gt 0 ]; then
-      status_symbols="${status_symbols} ⇅"  # diverse
+      status_symbols="${status_symbols}⇅"  # diverse
     elif [ "$ahead" -gt 0 ]; then
-      status_symbols="${status_symbols} ↑"  # can be pushed
+      status_symbols="${status_symbols}↑"  # can be pushed
     elif [ "$behind" -gt 0 ]; then
-      status_symbols="${status_symbols} ↓"  # can be pulled
+      status_symbols="${status_symbols}↓"  # can be pulled
     elif git rev-parse --abbrev-ref @{u} >/dev/null 2>&1; then
-      status_symbols="${status_symbols} ✔"  # synced with remote
+      status_symbols="${status_symbols}✔"  # synced with remote
     fi
 
     echo "${status_symbols}"
@@ -121,7 +122,7 @@ function __git_info() {
         fi
         # Get the Git status
         # git_info+="$(__git_symbols)"
-        git_info+="$(__git_status_info)"
+        git_info+=" $(__git_status_info)"
         echo " ($git_info)"
     fi
 }
