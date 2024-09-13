@@ -90,8 +90,9 @@ function __git_status_info {
     fi
 
     # Check remote status
-    local ahead=$(git rev-list --left-right --count @{u}...HEAD 2>/dev/null | awk '{print $1}')
-    local behind=$(git rev-list --left-right --count HEAD...@{u} 2>/dev/null | awk '{print $2}')
+    local ahead behind
+    git_status_v="$(git status --porcelain=v2 --branch --show-stash 2>/dev/null)"
+    read -d "\n" -r ahead behind <<< $(echo "$git_status_v" | grep "^# branch.ab" | grep -o -E '[+-][0-9]+' | sed 's/[-+]//')
 
     if [ "$ahead" -gt 0 ] && [ "$behind" -gt 0 ]; then
       status_symbols="${status_symbols} ⇅"  # diverse
