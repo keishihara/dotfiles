@@ -1,9 +1,10 @@
 # This is Git's per-user configuration file.
 [user]
 	name = keishi.ishihara
-	email = keishi.ishihara@accenture.com
+	email = keishi.ishihara17@gmail.com
 [core]
 	editor = vim
+	pager = delta
 [alias]
 	s = status
 	ss = status -s
@@ -17,7 +18,6 @@
 	ui = auto
 [help]
 	autocorrect = 1
-
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
