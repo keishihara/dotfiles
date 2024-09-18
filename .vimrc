@@ -94,6 +94,9 @@ set nrformats=
 set whichwrap=b,s,h,l,<,>,[,],~
 " バッファスクロール
 set mouse=a
+" 行番号の色を設定
+hi LineNr ctermfg=243
+
 
 " auto reload .vimrc
 augroup source-vimrc
