@@ -30,21 +30,44 @@ done
 # Hint: run command below to update extension list
 # code --list-extensions > extensions.txt
 
-if [ -e ~/Library/Application\ Support/Code/User ]; then
-    # Only when VSCode installation is found
-    cd ~/Library/Application\ Support/Code/User
+if [ "$(uname)" = Darwin ]; then
 
-    mv settings.json settings.json.bak
-    mv keybindings.json keybindings.json.bak
-    mv snippets snippets.bak
+    if [ -d ~/Library/Application\ Support/Code/User ]; then
+        # Only when VSCode installation is found
+        cd ~/Library/Application\ Support/Code/User
 
-    ln -insv ${DOTFILES}/app/vscode/settings.json
-    ln -insv ${DOTFILES}/app/vscode/keybindings.json
-    ln -insv ${DOTFILES}/app/vscode/snippets.json
+        mv settings.json settings.json.bak
+        mv keybindings.json keybindings.json.bak
+        mv snippets snippets.bak
 
-    for extension in `cat ${DOTFILES}/app/vscode/extensions.txt`; do
-        code --install-extension $extension
-    done
-else
-    echo "Skip installing VSCode settings as VSCode is not installed."
+        ln -insv ${DOTFILES}/app/vscode/settings.json
+        ln -insv ${DOTFILES}/app/vscode/keybindings.json
+        ln -insv ${DOTFILES}/app/vscode/snippets.json
+
+        for extension in `cat ${DOTFILES}/app/vscode/extensions.txt`; do
+            code --install-extension $extension
+        done
+    else
+        echo "Skip installing VSCode settings as VSCode is not installed."
+    fi
+
+elif [ "$(uname)" = "Linux" ]; then
+    if [ -d ~/.config/Code/User ]; then
+        # Only when VSCode installation is found
+        cd ~/.config/Code/User
+
+        mv settings.json settings.json.bak
+        mv keybindings.json keybindings.json.bak
+        mv snippets snippets.bak
+
+        ln -insv ${DOTFILES}/app/vscode/settings.json
+        ln -insv ${DOTFILES}/app/vscode/keybindings.json
+        ln -insv ${DOTFILES}/app/vscode/snippets.json
+
+        for extension in `cat ${DOTFILES}/app/vscode/extensions.txt`; do
+            code --install-extension $extension
+        done
+    else
+        echo "Skip installing VSCode settings as VSCode is not installed."
+    fi
 fi
