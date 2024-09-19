@@ -18,6 +18,7 @@
   ], // 縦線
   "editor.suggest.preview": true, // オートコンプリートのプレビューを表示
   "editor.suggestSelection": "recentlyUsedByPrefix", // 入力時の補完候補選択
+  "editor.detectIndentation": false,
   // python formatting
   "python.formatting.provider": "autopep8",
   "python.linting.flake8Enabled": false,
