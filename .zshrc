@@ -244,8 +244,12 @@ alias cd="z"
 #   Integrations and vars  #
 # ======================== #
 
-# Shell integrations
+# fzf installed via git
+if [ "$(uname)" = "Linux" ]; then
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh || echo fzf is not installed.
+fi
 source <(fzf --zsh) # enable fuzzy find
+
 eval "$(zoxide init zsh --hook prompt )" # enable zoxide
 
 # Homebrew
@@ -278,4 +282,4 @@ _fzf_compgen_dir() {
 }
 
 # fzf-git
-[ -e ~/.config/fzf/fzf-git.sh/fzf-git.sh ] && source ~/.config/fzf/fzf-git.sh/fzf-git.sh || echo fzf-git.sh not found
+[ -e ~/.config/fzf-git/fzf-git.sh ] && source ~/.config/fzf-git/fzf-git.sh || echo fzf-git.sh not found
