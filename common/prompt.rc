@@ -2,20 +2,103 @@
 
 # Function to shorten the current directory path
 __shorten_path() {
-    # Get the full path of the current directory
-    local full_path="${PWD}"
-
-    # Replace the home directory path with "~"
-    full_path="${full_path/#$HOME/~}"
-
-    # Set the maximum display length (e.g., 30 characters)
+    local full_path="${PWD/#$HOME/~}"
     local max_length=30
-
-    # If the path length does not exceed max_length, display it as is
     if [[ ${#full_path} -le $max_length ]]; then
         echo "$full_path"
     else
-        # If the path is too long, shorten it to .../current_directory_name format
-        echo "../${full_path##*/}"
+        echo "…/${full_path##*/}"
+    fi
+}
+
+__git_status_info() {
+    local status_symbols=''
+    local git_status_v
+    local line
+    local status_code
+
+    # Check if inside a Git repository
+    if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        return
+    fi
+
+    # Get the output of git status
+    git_status_v=$(git status --porcelain=v2 --branch --untracked-files=normal --show-stash 2>/dev/null)
+
+    # Initialize ahead and behind
+    local ahead=0
+    local behind=0
+
+    # Parse the status line by line
+    while IFS= read -r line; do
+        case "$line" in
+            '# branch.ab '*)
+                # Get the number of ahead/behind
+                ahead=$(echo "$line" | awk '{print $3}' | tr -d '+')
+                behind=$(echo "$line" | awk '{print $4}' | tr -d '-')
+                ;;
+            '1 '*)
+                # Parse the file status code
+                status_code=$(echo "$line" | cut -d' ' -f2)
+                # Status code is 2 characters (XY)
+                local x_status=${status_code:0:1}
+                local y_status=${status_code:1:1}
+
+                # Changes in index (staged changes)
+                if [[ "$x_status" != '.' ]]; then
+                    status_symbols+='+'  # Staged files
+                fi
+
+                # Changes in worktree (unstaged changes)
+                if [[ "$y_status" != '.' ]]; then
+                    case "$y_status" in
+                        M)
+                            status_symbols+='*'  # Modified file
+                            ;;
+                        D)
+                            status_symbols+='×'  # Deleted file
+                            ;;
+                    esac
+                fi
+                ;;
+            '? '*)
+                status_symbols+='?'  # Untracked files
+                ;;
+            *)
+                ;;
+        esac
+    done <<< "$git_status_v"
+
+    # Remove duplicate symbols
+    status_symbols=$(echo "$status_symbols" | fold -w1 | sort -u | tr -d '\n')
+
+    # Check the remote status
+    if [[ "$ahead" -gt 0 && "$behind" -gt 0 ]]; then
+        status_symbols+='⇅'
+    elif [[ "$ahead" -gt 0 ]]; then
+        status_symbols+='↑'
+    elif [[ "$behind" -gt 0 ]]; then
+        status_symbols+='↓'
+    else
+        # If remote branch is set
+        if git rev-parse --abbrev-ref @{u} >/dev/null 2>&1; then
+            status_symbols+='✔'
+        fi
+    fi
+
+    echo "$status_symbols"
+}
+
+__update_git_info() {
+    local git_branch_name=''
+    local git_info=''
+
+    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        git_branch_name="$(git symbolic-ref --short HEAD 2>/dev/null)"
+        [[ -n "$git_branch_name" ]] && git_info=" $git_branch_name"
+        git_info+=" $(__git_status_info)"
+        echo "($git_info)"
+    else
+        echo ""
     fi
 }
