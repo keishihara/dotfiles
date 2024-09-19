@@ -32,20 +32,32 @@ fi
 # Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
+
 # ==================== #
 #    Plugins list      #
 # ==================== #
 
 # Enable cache
 zinit ice wait'!0' lucid cache
-# zinit load plugin/repository
 
 # Load completions
-autoload -U compinit
-compinit -C  # skip security checking. Without -C option it'll take so long here
+# if ls ~/.zcompdump* &> /dev/null; then
+#     rm ~/.zcompdump*
+# fi
+# autoload -U compinit
+# compinit -C  # skip security checking. Without -C option it'll take so long here
+# compinit
 
-# Add in zsh plugins
-zinit light Aloxaf/fzf-tab # This must be loaded after compinit and before other pulugins
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+	compinit
+else
+	compinit -C
+fi
+
+compdef -d git # Use fzf instead
+
+zinit light Aloxaf/fzf-tab # This should be loaded after compinit and before other pulugins
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 
@@ -87,10 +99,11 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
-# for tmux
-zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
-# History
+# ============== #
+#    History     #
+# ============== #
+
 HISTSIZE=100000
 HISTFILE=~/.zsh_history
 SAVEHIST=$HISTSIZE
@@ -104,13 +117,93 @@ setopt hist_ignore_dups
 setopt hist_find_no_dups
 
 
+# ==================== #
+#        Prompt        #
+# ==================== #
+
+# Enable substitution in the prompt.
+autoload -U colors && colors
+
+# Define functions for the prompt, which must be defined before starting a worker
+source ${DOTFILES:-$HOME/dotfiles}/common/prompt.rc
+
+# Allow prompt substitution
+setopt prompt_subst # this allows %(...) command substitution and variable expansion in the prompt.
+
+# Basic prompt
+# BASIC_PROMPT=''
+# BASIC_PROMPT+='%F{099}[%n]%f '
+# BASIC_PROMPT+='%F{blue} %~%f '
+# BASIC_PROMPT+='%(?.%F{green}❯ .%F{red}❯ )%f'
+# PROMPT=$BASIC_PROMPT
+
+zinit light mafredri/zsh-async
+async_init
+
+# Initialize a variable for storing git info
+__GIT_PROMPT_INFO=""
+
+# Start a worker for getting git information
+async_start_worker git_worker -u -n
+
+_git_info_callback() {
+    local job_name="$1"
+    local ret_code="$2"
+    local output="$3"
+    local exec_time="$4"
+    local error_output="$5"
+    local has_next="$6"
+
+    # Message for debugging
+    # echo "Callback called with output: $output" >&2
+
+    if [[ "$job_name" == "[async]" ]]; then
+        echo "Async error: $error_output" >&2
+    else
+        __GIT_PROMPT_INFO="$output"
+
+        # Update the prompt
+        zle && zle reset-prompt
+    fi
+
+    # Process if there are other results in buffer
+    if [[ "$has_next" -eq 1 ]]; then
+        async_process_results git_worker _git_info_callback
+    fi
+}
+
+# Register the callback function
+async_register_callback git_worker _git_info_callback
+
+PROMPT=''
+PROMPT+='%F{099}[%n]%f '
+PROMPT+='%F{blue} $(__shorten_path)%f '
+PROMPT+='%F{cyan}${__GIT_PROMPT_INFO}%f '
+PROMPT+=$'\n'
+PROMPT+='%(?.%F{green}❯ .%F{red}❯ )%f'
+
+RPROMPT='%F{242}%*%f' # Current time on the right prompt
+
+# Executed every time you hit the enter key
+precmd() {
+    # Process the results of async job
+    async_process_results git_worker _git_info_callback
+
+    # Sync worker's current directory to the shell's one
+    async_worker_eval git_worker "cd $PWD"
+
+    # Get the git info in async way
+    async_job git_worker __update_git_info
+}
+
 
 # ===================== #
 #      Keybindings      #
 # ===================== #
 
 bindkey -e # disable vi keybindings
-bindkey -s "®" 'source ~/.zshrc^M' # option + r to run `source ~/.zshrc`
+bindkey -s '^[r' 'source ~/.zshrc^M' # option + r to run `source ~/.zshrc`
+
 
 # https://gist.github.com/junegunn/f4fca918e937e6bf5bad?permalink_comment_id=2981199#gistcomment-2981199
 gli() {
@@ -133,28 +226,18 @@ gli() {
       --height 80%
 }
 
+# https://stackoverflow.com/a/9810485
+__git_files () {
+    _wanted files expl 'local files' _files
+}
 
-# ==================== #
-#        Prompt        #
-# ==================== #
 
-# Enable substitution in the prompt.
-autoload -U colors && colors
-setopt prompt_subst
+# =========== #
+#   Aliases   #
+# =========== #
 
-source ${DOTFILES:-$HOME/dotfiles}/common/git_info.rc
-source ${DOTFILES:-$HOME/dotfiles}/common/prompt.rc
-
-# Hint: a one liner for displaying available colors
-# $ for c in {000..255}; do echo -n "\e[38;5;${c}m $c" ; [ $(($c%16)) -eq 15 ] && echo;done;echo
-
-PROMPT=''
-# PROMPT+='%F{189}%K{000}[%n@%m]%f%k ' # Display the username followed by @ and hostname in yellow
-PROMPT+='%F{099}[%n]%f ' # Display the username followed by @ and hostname in yellow
-PROMPT+='%F{blue} $(__shorten_path)%f' # Display the current working directory in blue
-PROMPT+='%F{cyan}$(__git_info)%f ' # Display the vcs info in red
-PROMPT+='%(?.%F{green}❯ .%F{red}❯ )' # Display a green prompt if the last command succeeded, or red if it failed
-PROMPT+='%f' # Reset the text color
+source ${DOTFILES:-$HOME/dotfiles}/common/aliases.rc
+alias cd="z"
 
 
 # ======================== #
@@ -165,40 +248,23 @@ PROMPT+='%f' # Reset the text color
 source <(fzf --zsh) # enable fuzzy find
 eval "$(zoxide init zsh --hook prompt )" # enable zoxide
 
-# Homebrew (assuming installed at /opt/homebrew)
-if [ "$(uname)" = Darwin ] && [ -f /opt/homebrew/bin/brew ]; then
-    eval $(/opt/homebrew/bin/brew shellenv)
-else
-    __echo_error Homebrew installation does not exist.
-fi
-
-# CUDA
-if [ -L /usr/local/cuda ] || [ -d /usr/local/cuda ]; then
-    export PATH="/usr/local/cuda/bin:$PATH"
-    export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
-else
-    if [ ! "$(uname)" = Darwin ]; then
-        __echo_error "CUDA installation not found."
+# Homebrew
+if [ "$(uname)" = Darwin ]; then
+    if [ -x "$(command -v brew)" ]; then
+        eval "$(brew shellenv)"
+    else
+        __echo_error "Homebrew is not installed."
     fi
 fi
 
 # Pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
 if __exists pyenv; then
-    eval "$(pyenv init --path --no-rehash)"
-    # eval "$(pyenv init - zsh)"
+    eval "$(pyenv init -)"
 else
     __echo_error "pyenv not found."
 fi
 
-export PYTHONDONTWRITEBYTECODE=1 # do not create __pychache__
-
 # fzf
-export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
-
 # Use fd (https://github.com/sharkdp/fd) for listing path candidates.
 # - The first argument to the function ($1) is the base path to start traversal
 # - See the source code (completion.{bash,zsh}) for the details.
@@ -212,15 +278,4 @@ _fzf_compgen_dir() {
 }
 
 # fzf-git
-source ~/.config/fzf/fzf-git.sh/fzf-git.sh
-
-
-typeset -U path PATH # delete dups in PATH
-
-
-# =========== #
-#   Aliases   #
-# =========== #
-
-alias cd="z"
-source $DOTFILES/common/aliases.rc
+[ -e ~/.config/fzf/fzf-git.sh/fzf-git.sh ] && source ~/.config/fzf/fzf-git.sh/fzf-git.sh || echo fzf-git.sh not found
