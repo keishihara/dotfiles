@@ -26,6 +26,8 @@ elif [ "$OSTYPE" = linux-gnu ]; then
     alias ll='ls -vFlh --group-directories-first --color=auto'
     alias la='ls -vFlha --group-directories-first --color=auto'
     alias l='ls -vCF1 --group-directories-first --color=auto'
+
+    alias wezterm='flatpak run org.wezfurlong.wezterm'
 fi
 
 alias ..='cd ..'
