@@ -1,5 +1,10 @@
 function __exists() { type "$1" >/dev/null 2>&1; return $?; }
 
+if [ -d $HOME/.local/bin ]; then
+    # zoxide will be install here in Ubuntu
+    export PATH="$HOME/.local/bin:$PATH"
+fi
+
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
