@@ -136,3 +136,5 @@ tmux source ~/.tmux.conf
 
 echo
 echo '~/.bashrc sourced!'
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
