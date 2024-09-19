@@ -22,7 +22,10 @@ if [ "$(uname)" = Darwin ]; then
     fi
 
 elif [ "$OSTYPE" = linux-gnu ]; then
-    alias ls='ls --color=auto'
+    alias ls='ls -v --group-directories-first --color=auto'
+    alias ll='ls -vFlh --group-directories-first --color=auto'
+    alias la='ls -vFlha --group-directories-first --color=auto'
+    alias l='ls -vCF1 --group-directories-first --color=auto'
 fi
 
 alias ..='cd ..'
