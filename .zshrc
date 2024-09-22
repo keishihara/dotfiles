@@ -125,6 +125,9 @@ setopt hist_find_no_dups
 # Enable substitution in the prompt.
 autoload -U colors && colors
 
+# One-liner for showing all possible colors
+# $ for c in {000..255}; do echo -n "\e[38;5;${c}m $c" ; [ $(($c%16)) -eq 15 ] && echo;done;echo
+
 # Define functions for the prompt, which must be defined before starting a worker
 source ${DOTFILES:-$HOME/dotfiles}/common/prompt.rc
 
