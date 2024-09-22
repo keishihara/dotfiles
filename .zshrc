@@ -50,7 +50,8 @@ zinit ice wait'!0' lucid cache
 
 autoload -Uz compinit
 if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
-	compinit
+	# compinit  # this is too slow
+	compinit -C
 else
 	compinit -C
 fi
