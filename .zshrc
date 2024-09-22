@@ -180,13 +180,15 @@ _git_info_callback() {
 async_register_callback git_worker _git_info_callback
 
 PROMPT=''
-PROMPT+='%F{099}[%n]%f '
+# PROMPT+='%F{171}[%n]%f '
+PROMPT+='%F{135}[%n]%f '
+PROMPT+='%F{105}󰁥%m%f '
 PROMPT+='%F{blue} $(__shorten_path)%f '
 PROMPT+='%F{cyan}${__GIT_PROMPT_INFO}%f '
 PROMPT+=$'\n'
 PROMPT+='%(?.%F{green}❯ .%F{red}❯ )%f'
 
-RPROMPT='%F{242}%*%f' # Current time on the right prompt
+RPROMPT='' # No PROMPT
 
 # Executed every time you hit the enter key
 precmd() {
