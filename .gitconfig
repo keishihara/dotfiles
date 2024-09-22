@@ -1,30 +1,28 @@
 # This is Git's per-user configuration file.
 [user]
-	name = keishi.ishihara
-	email = keishi.ishihara17@gmail.com
+    name = keishi.ishihara
+    email = keishi.ishihara17@gmail.com
 [core]
-	editor = vim
-	pager = delta
+    editor = vim
+    pager = delta
 [alias]
-	s = status
-	ss = status -s
-	sh = show
-	a = add
-	co = commit
-	c = commit
-	d = diff
-	tree = log --graph --pretty=format:\"%x09%C(auto) %h %Cgreen %ar %Creset%x09by\\\"%C(cyan ul)%an%Creset\\\" %x09%C(auto)%s %d\"
+    s = status
+    ss = status -s
+    sh = show
+    a = add
+    co = commit
+    c = commit
+    d = diff
+    tree = log --graph --pretty=format:\"%x09%C(auto) %h %Cgreen %ar %Creset%x09by\\\"%C(cyan ul)%an%Creset\\\" %x09%C(auto)%s %d\"
 [color]
-	ui = auto
+    ui = auto
 [help]
-	autocorrect = 1
+    autocorrect = 1
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
 [init]
-	defaultBranch = main
-[credential]
-	helper = !aws codecommit credential-helper $@
-	UseHttpPath = true
+    defaultBranch = main
+
