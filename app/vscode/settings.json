@@ -62,9 +62,15 @@
     "awsgpu02": "linux",
     "__dgx": "linux",
     "__gpu01": "linux",
-    "kc-desktop": "linux"
-  },
+    "kc-desktop": "linux",
+    "gc1-login-temp": "linux",
+    "gc1-dgx-h100-8": "linux",
+    "gc1-login": "linux",
+    "gc1-dgx-h100-6": "linux",
+    "kc-desktop-remote": "linux"
+},
   "remote.SSH.useExecServer": false,
   "notebook.lineNumbers": "on",
-  "editor.minimap.size": "fit"
+  "editor.minimap.size": "fit",
+  "editor.fontFamily": "MesloLGS Nerd Font Mono"
 }
