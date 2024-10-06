@@ -289,3 +289,8 @@ _fzf_compgen_dir() {
 
 # fzf-git
 [ -e ~/.config/fzf-git/fzf-git.sh ] && source ~/.config/fzf-git/fzf-git.sh || echo fzf-git.sh not found
+
+# ssh-agent
+eval `ssh-agent`
+# You want to run the following command just once to add the key to ssh-agent
+# ssh-add --apple-use-keychain ~/.ssh/gaggle
