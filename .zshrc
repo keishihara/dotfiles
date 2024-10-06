@@ -287,9 +287,6 @@ _fzf_compgen_dir() {
   fd --type=d --hidden --exclude .git . "$1"
 }
 
-# fzf-git
-[ -e ~/.config/fzf-git/fzf-git.sh ] && source ~/.config/fzf-git/fzf-git.sh || echo fzf-git.sh not found
-
 # ssh-agent
 eval `ssh-agent`
 # You want to run the following command just once to add the key to ssh-agent

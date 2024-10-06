@@ -21,13 +21,6 @@ else
     echo fzf is already installed.
 fi
 
-if [ ! -f ~/.config/fzf-git/fzf-git.sh ]; then
-    echo Installing fzf-git...
-    git clone https://github.com/junegunn/fzf-git.sh.git ~/.config/fzf-git
-else
-    echo fzf-git is already isntalled.
-fi
-
 if ! __exists zoxide; then
     echo Installing zoxide...
     curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
