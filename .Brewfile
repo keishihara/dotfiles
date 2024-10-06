@@ -39,9 +39,11 @@ brew "zlib"
 brew "zoxide"
 
 cask "clipy"
+cask "cmd-eikana"
 cask "font-meslo-lg-nerd-font"
-cask "google-japanese-ime"
+cask "itsycal"
+# cask "google-japanese-ime" # this may cause an error
 cask "monitorcontrol"
-cask "only-switch"
+cask "rectangle"
+cask "visual-studio-code"
 cask "wezterm"
-
