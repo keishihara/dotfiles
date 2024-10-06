@@ -288,7 +288,6 @@ _fzf_compgen_dir() {
 }
 
 # ssh-agent
-eval `ssh-agent`
+eval `ssh-agent` > /dev/null
 # You want to run the following command just once to add the key to ssh-agent
-ssh-add --apple-use-keychain ~/.ssh/gaggle
-
+ssh-add --apple-use-keychain ~/.ssh/gaggle > /dev/null 2>&1
