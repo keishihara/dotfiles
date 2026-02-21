@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-EXT_FILE="$SCRIPT_DIR/extensions.txt"
+EXT_FILE="$SCRIPT_DIR/cursor-extensions.txt"
 
 # Detect CLI: cursor (local) or code (remote)
 if command -v cursor &>/dev/null; then
