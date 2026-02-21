@@ -51,6 +51,6 @@ done
 # Hint for local overrides
 if [ ! -f "$HOME/.bashrc.local" ]; then
     echo ""
-    echo "HINT: ~/.bashrc.local not found. Create one from the example:"
-    echo "  cp $DOTFILES_DIR/.bashrc.local.example $HOME/.bashrc.local"
+    echo "HINT: ~/.bashrc.local not found. Create one for machine-specific settings."
+    echo "  See README.md for details."
 fi
