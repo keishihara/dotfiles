@@ -83,6 +83,10 @@ activate() {
     fi
 }
 
+# Reset terminal mouse tracking mode (fix after abnormal exit of tmux, etc.)
+fixmouse() { printf '\e[?9l\e[?1000l\e[?1002l\e[?1003l\e[?1006l\e[?1015l'; stty sane; }
+fixmouse
+
 # --------------------------------------------------
 # Local overrides
 # --------------------------------------------------
