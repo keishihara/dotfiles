@@ -1,0 +1,6 @@
+anthropic.claude-code
+charliermarsh.ruff
+davidanson.vscode-markdownlint
+fcrespo82.markdown-table-formatter
+ms-python.python
+yzhang.markdown-all-in-one
