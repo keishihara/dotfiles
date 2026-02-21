@@ -8,22 +8,43 @@ cd ~/dotfiles
 ./install.sh
 ```
 
-This creates symlinks from `$HOME` to the dotfiles in this repository.
+This creates symlinks from `$HOME` (and `~/.config/`) to the dotfiles in this repository.
 Existing files are backed up with a `.backup.<timestamp>` suffix.
+
+## Managed files
+
+
+| Path               | Description            |
+| ------------------ | ---------------------- |
+| `.bashrc`          | Bash config (portable) |
+| `.gitconfig`       | Git config (portable)  |
+| `.tmux.conf`       | tmux config            |
+| `.config/wezterm/` | WezTerm config         |
+
 
 ## Local overrides
 
 Machine-specific settings go in `*.local` files (git-ignored):
 
-| File                 | Purpose                                           |
-|----------------------|---------------------------------------------------|
-| `~/.bashrc.local`    | Shell: PATH, module loads, cluster commands, etc. |
-| `~/.gitconfig.local` | Git: credential helpers, etc.                     |
 
-Templates are provided as `*.local.example`. To get started:
+| File                 | Purpose                                           |
+| -------------------- | ------------------------------------------------- |
+| `~/.bashrc.local`    | Shell: PATH, module loads, cluster commands, etc. |
+| `~/.gitconfig.local` | Git: credential helpers, user overrides, etc.     |
+
+
+Create these files manually on each machine:
 
 ```bash
-cp .bashrc.local.example ~/.bashrc.local
-cp .gitconfig.local.example ~/.gitconfig.local
-# Edit each file for your environment
+touch ~/.bashrc.local
+touch ~/.gitconfig.local
 ```
+
+## Scripts
+
+
+| Script                                 | Description                                                   |
+| -------------------------------------- | ------------------------------------------------------------- |
+| `scripts/install-cursor-extensions.sh` | Install Cursor/VSCode extensions from `cursor-extensions.txt` |
+
+
