@@ -6,6 +6,7 @@
 git clone https://github.com/keishihara/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ./install.sh
+./scripts/install-cli-tools.sh  # fzf, ripgrep, delta
 ```
 
 This creates symlinks from `$HOME` (and `~/.config/`) to the dotfiles in this repository.
@@ -43,8 +44,9 @@ touch ~/.gitconfig.local
 ## Scripts
 
 
-| Script                                 | Description                                                   |
-| -------------------------------------- | ------------------------------------------------------------- |
+| Script                                 | Description                                                  |
+| -------------------------------------- | ------------------------------------------------------------ |
+| `scripts/install-cli-tools.sh`         | Install fzf, ripgrep, delta, lazygit to `~/.local/bin` (no sudo) |
 | `scripts/install-cursor-extensions.sh` | Install Cursor/VSCode extensions from `cursor-extensions.txt` |
 
 
