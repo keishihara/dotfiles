@@ -54,7 +54,6 @@ alias smi='nvidia-smi'
 alias reload='source ~/.bashrc'
 alias sq='squeue -o "%.6i|%.20j|%.25P|%.20u|%.2t|%.12M|%.12l|%.4D|%.20R"'
 
-
 # --------------------------------------------------
 # Completion
 # --------------------------------------------------
@@ -70,8 +69,13 @@ fi
 # PATH
 # --------------------------------------------------
 export PATH="$HOME/.local/bin:$PATH"
+
+# --------------------------------------------------
+# Tool activation
+# --------------------------------------------------
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"  # uv
 [ -x "$HOME/.local/bin/mise" ] && eval "$("$HOME/.local/bin/mise" activate bash)"  # mise
+command -v fzf &>/dev/null && eval "$(fzf --bash)"
 
 # --------------------------------------------------
 # Functions
@@ -89,13 +93,6 @@ activate() {
 # Reset terminal mouse tracking mode (fix after abnormal exit of tmux, etc.)
 fixmouse() { printf '\e[?9l\e[?1000l\e[?1002l\e[?1003l\e[?1006l\e[?1015l'; stty sane; }
 fixmouse
-
-# --------------------------------------------------
-# fzf
-# --------------------------------------------------
-if command -v fzf &>/dev/null; then
-    eval "$(fzf --bash)"
-fi
 
 # --------------------------------------------------
 # Local overrides
