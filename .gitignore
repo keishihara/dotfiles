@@ -1,2 +1,4 @@
 *.local
 *.log
+.nvimlog
+WORK_LOG.md

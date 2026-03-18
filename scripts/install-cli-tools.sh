@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Install CLI tools to ~/.local/bin (no sudo required)
-# Supports: fzf, ripgrep, delta, lazygit
+# Supports: fzf, ripgrep, delta, lazygit, neovim
 
 INSTALL_DIR="$HOME/.local/bin"
 mkdir -p "$INSTALL_DIR"
@@ -19,6 +19,15 @@ FZF_VERSION="0.61.1"
 RG_VERSION="14.1.1"
 DELTA_VERSION="0.18.2"
 LAZYGIT_VERSION="0.44.1"
+NVIM_VERSION="0.11.5"
+
+version_ge() {
+    [ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
+}
+
+get_nvim_version() {
+    nvim --version | head -1 | awk '{print $2}' | sed 's/^v//'
+}
 
 install_fzf() {
     if command -v fzf &>/dev/null; then
@@ -82,7 +91,33 @@ install_lazygit() {
     echo "DONE: lazygit $LAZYGIT_VERSION -> $INSTALL_DIR/lazygit"
 }
 
+install_neovim() {
+    if command -v nvim &>/dev/null; then
+        local current_version
+        current_version="$(get_nvim_version)"
+        if version_ge "$current_version" "$NVIM_VERSION"; then
+            echo "OK:   nvim v$current_version"
+            return
+        fi
+        echo "Updating neovim from v$current_version to v$NVIM_VERSION..."
+    else
+        echo "Installing neovim $NVIM_VERSION..."
+    fi
+    local nvim_dir="$HOME/.local/nvim"
+    local archive="nvim-linux-x86_64"
+    if [ "$ARCH" = "aarch64" ]; then archive="nvim-linux-aarch64"; fi
+    local url="https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/${archive}.tar.gz"
+    local tmp="$(mktemp -d)"
+    curl -sL "$url" | tar xz -C "$tmp"
+    rm -rf "$nvim_dir"
+    mv "$tmp/$archive" "$nvim_dir"
+    rm -rf "$tmp"
+    ln -sf "$nvim_dir/bin/nvim" "$INSTALL_DIR/nvim"
+    echo "DONE: nvim v$NVIM_VERSION -> $nvim_dir"
+}
+
 install_fzf
 install_ripgrep
 install_delta
 install_lazygit
+install_neovim

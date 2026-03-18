@@ -12,6 +12,7 @@ FILES=(
 
 # XDG config directories: "repo_dir:link_path"
 CONFIG_DIRS=(
+    ".config/nvim:$HOME/.config/nvim"
     ".config/wezterm:$HOME/.config/wezterm"
 )
 

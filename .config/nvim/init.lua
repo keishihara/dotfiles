@@ -1,0 +1,68 @@
+-- vim.cmd("set expandtab")
+-- vim.cmd("set tabstop = 4")
+-- vim.cmd("set softtablstop = 4")
+-- vim.cmd("set shiftwidth = 4")
+
+-- -- --------------------------------------------------
+-- -- Keymaps
+-- -- --------------------------------------------------
+-- local map = vim.keymap.set
+--
+-- -- Clear search highlight
+-- map("n", "<Esc>", "<cmd>nohlsearch<CR>")
+--
+-- -- Better window navigation
+-- map("n", "<C-h>", "<C-w>h")
+-- map("n", "<C-j>", "<C-w>j")
+-- map("n", "<C-k>", "<C-w>k")
+-- map("n", "<C-l>", "<C-w>l")
+--
+-- -- Resize with arrows
+-- map("n", "<C-Up>", "<cmd>resize +2<CR>")
+-- map("n", "<C-Down>", "<cmd>resize -2<CR>")
+-- map("n", "<C-Left>", "<cmd>vertical resize -2<CR>")
+-- map("n", "<C-Right>", "<cmd>vertical resize +2<CR>")
+--
+-- -- Move lines up/down in visual mode
+-- map("v", "J", ":m '>+1<CR>gv=gv")
+-- map("v", "K", ":m '<-2<CR>gv=gv")
+--
+-- -- Stay centered when scrolling
+-- map("n", "<C-d>", "<C-d>zz")
+-- map("n", "<C-u>", "<C-u>zz")
+--
+-- -- Don't overwrite register on paste in visual mode
+-- map("x", "p", '"_dP')
+--
+-- -- Buffer navigation
+-- map("n", "<S-h>", "<cmd>bprevious<CR>")
+-- map("n", "<S-l>", "<cmd>bnext<CR>")
+-- map("n", "<leader>bd", "<cmd>bdelete<CR>")
+--
+-- -- Quick save / quit
+-- map("n", "<leader>w", "<cmd>w<CR>")
+-- map("n", "<leader>q", "<cmd>q<CR>")
+--
+-- -- --------------------------------------------------
+-- -- Autocommands
+-- -- --------------------------------------------------
+--
+-- -- Highlight on yank
+-- vim.api.nvim_create_autocmd("TextYankPost", {
+--     callback = function()
+--         vim.highlight.on_yank({ timeout = 200 })
+--     end,
+-- })
+--
+-- -- Remove trailing whitespace on save
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+--     pattern = "*",
+--     callback = function()
+--         local pos = vim.api.nvim_win_get_cursor(0)
+--         vim.cmd([[%s/\s\+$//e]])
+--         vim.api.nvim_win_set_cursor(0, pos)
+--     end,
+-- })
+
+require("core")
+
