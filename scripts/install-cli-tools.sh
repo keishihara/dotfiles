@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Install CLI tools to ~/.local/bin (no sudo required)
-# Supports: fzf, ripgrep, delta, lazygit, neovim
+# Supports: mise, fzf, ripgrep, delta, lazygit, neovim
 
 INSTALL_DIR="$HOME/.local/bin"
 mkdir -p "$INSTALL_DIR"
@@ -27,6 +27,24 @@ version_ge() {
 
 get_nvim_version() {
     nvim --version | head -1 | awk '{print $2}' | sed 's/^v//'
+}
+
+install_mise() {
+    if command -v mise &>/dev/null; then
+        echo "OK:   mise $(mise --version | awk '{print $2}')"
+        return
+    fi
+    if [ -x "$INSTALL_DIR/mise" ]; then
+        echo "OK:   mise $("$INSTALL_DIR/mise" --version | awk '{print $2}')"
+        return
+    fi
+    echo "Installing mise..."
+    sh -c "$(curl -fsSL https://mise.run)"
+    if [ ! -x "$INSTALL_DIR/mise" ]; then
+        echo "ERROR: mise installation failed (expected $INSTALL_DIR/mise)"
+        exit 1
+    fi
+    echo "DONE: mise $("$INSTALL_DIR/mise" --version | awk '{print $2}') -> $INSTALL_DIR/mise"
 }
 
 install_fzf() {
@@ -116,6 +134,7 @@ install_neovim() {
     echo "DONE: nvim v$NVIM_VERSION -> $nvim_dir"
 }
 
+install_mise
 install_fzf
 install_ripgrep
 install_delta
