@@ -6,6 +6,21 @@ case $- in
       *) return;;
 esac
 
+# Prefer a fully specified UTF-8 locale for interactive SSH shells.
+# Some remote readline/TUI stacks handle multibyte input more reliably
+# with a language locale than with the generic C.UTF-8 default.
+if [ -n "${SSH_TTY:-}" ] && locale -a 2>/dev/null | grep -qx 'en_US\.utf8'; then
+    case "${LANG:-}" in
+        C.UTF-8|C.utf8) export LANG=en_US.utf8 ;;
+    esac
+    case "${LC_CTYPE:-}" in
+        ""|C.UTF-8|C.utf8) export LC_CTYPE=en_US.utf8 ;;
+    esac
+    case "${LC_ALL:-}" in
+        C.UTF-8|C.utf8) export LC_ALL=en_US.utf8 ;;
+    esac
+fi
+
 # --------------------------------------------------
 # History
 # --------------------------------------------------
@@ -91,7 +106,12 @@ activate() {
 }
 
 # Reset terminal mouse tracking mode (fix after abnormal exit of tmux, etc.)
-fixmouse() { printf '\e[?9l\e[?1000l\e[?1002l\e[?1003l\e[?1006l\e[?1015l'; stty sane; }
+# Re-enable iutf8 when supported so multibyte input/editing works correctly.
+fixmouse() {
+    printf '\e[?9l\e[?1000l\e[?1002l\e[?1003l\e[?1006l\e[?1015l'
+    stty sane
+    stty -a 2>/dev/null | grep -q 'iutf8' && stty iutf8
+}
 fixmouse
 
 # --------------------------------------------------
