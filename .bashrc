@@ -52,6 +52,8 @@ alias ...='cd ../..'
 alias ta='tmux attach'
 alias smi='nvidia-smi'
 alias reload='source ~/.bashrc'
+alias sq='squeue -o "%.6i|%.20j|%.25P|%.20u|%.2t|%.12M|%.12l|%.4D|%.20R"'
+
 
 # --------------------------------------------------
 # Completion
@@ -69,6 +71,7 @@ fi
 # --------------------------------------------------
 export PATH="$HOME/.local/bin:$PATH"
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"  # uv
+[ -x "$HOME/.local/bin/mise" ] && eval "$("$HOME/.local/bin/mise" activate bash)"  # mise
 
 # --------------------------------------------------
 # Functions
