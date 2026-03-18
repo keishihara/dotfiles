@@ -3,7 +3,7 @@
     email = keishi.ishihara17@gmail.com
 [core]
     editor = vim
-    pager = delta
+    # pager = delta
 [alias]
     s = status
     ss = status -s
