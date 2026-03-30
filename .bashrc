@@ -91,6 +91,11 @@ export PATH="$HOME/.local/bin:$PATH"
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"  # uv
 [ -x "$HOME/.local/bin/mise" ] && eval "$("$HOME/.local/bin/mise" activate bash)"  # mise
 command -v fzf &>/dev/null && eval "$(fzf --bash)"
+command -v zoxide &>/dev/null && eval "$(zoxide init bash)" && alias cd="z"
+
+# fzf + fd integration
+_fzf_compgen_path() { fd --hidden --exclude .git . "$1"; }
+_fzf_compgen_dir() { fd --type=d --hidden --exclude .git . "$1"; }
 
 # --------------------------------------------------
 # Functions

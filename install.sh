@@ -1,20 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
-
-# Symlink targets: "repo_path:link_path"
-FILES=(
-    ".bashrc:$HOME/.bashrc"
-    ".gitconfig:$HOME/.gitconfig"
-    ".tmux.conf:$HOME/.tmux.conf"
-)
-
-# XDG config directories: "repo_dir:link_path"
-CONFIG_DIRS=(
-    ".config/nvim:$HOME/.config/nvim"
-    ".config/wezterm:$HOME/.config/wezterm"
-)
+source "$(cd "$(dirname "$0")" && pwd)/dotfiles.conf"
 
 link_item() {
     local src="$1" dst="$2"
@@ -50,8 +37,9 @@ for entry in "${CONFIG_DIRS[@]}"; do
 done
 
 # Hint for local overrides
+echo ""
+echo "HINT: Restart your terminal or run 'source ~/.zshrc' (macOS) / 'source ~/.bashrc' (Linux) to apply."
 if [ ! -f "$HOME/.bashrc.local" ]; then
-    echo ""
     echo "HINT: ~/.bashrc.local not found. Create one for machine-specific settings."
     echo "  See README.md for details."
 fi

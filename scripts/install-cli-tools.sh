@@ -9,8 +9,8 @@ mkdir -p "$INSTALL_DIR"
 
 ARCH="$(uname -m)"
 case "$ARCH" in
-    x86_64)  ARCH_FZF="linux_amd64" ARCH_RG="x86_64-unknown-linux-musl" ARCH_DELTA="x86_64-unknown-linux-musl" ARCH_LG="Linux_x86_64" ;;
-    aarch64) ARCH_FZF="linux_arm64" ARCH_RG="aarch64-unknown-linux-gnu" ARCH_DELTA="aarch64-unknown-linux-gnu" ARCH_LG="Linux_arm64" ;;
+    x86_64)  ARCH_FZF="linux_amd64" ARCH_RG="x86_64-unknown-linux-musl" ARCH_DELTA="x86_64-unknown-linux-musl" ARCH_LG="Linux_x86_64" ARCH_ZO="x86_64-unknown-linux-musl" ;;
+    aarch64) ARCH_FZF="linux_arm64" ARCH_RG="aarch64-unknown-linux-gnu" ARCH_DELTA="aarch64-unknown-linux-gnu" ARCH_LG="Linux_arm64" ARCH_ZO="aarch64-unknown-linux-musl" ;;
     *) echo "ERROR: Unsupported architecture: $ARCH"; exit 1 ;;
 esac
 
@@ -20,6 +20,7 @@ RG_VERSION="14.1.1"
 DELTA_VERSION="0.18.2"
 LAZYGIT_VERSION="0.44.1"
 NVIM_VERSION="0.11.5"
+ZOXIDE_VERSION="0.9.6"
 
 version_ge() {
     [ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
@@ -134,9 +135,26 @@ install_neovim() {
     echo "DONE: nvim v$NVIM_VERSION -> $nvim_dir"
 }
 
+install_zoxide() {
+    if command -v zoxide &>/dev/null; then
+        echo "OK:   zoxide $(zoxide --version | awk '{print $2}')"
+        return
+    fi
+    echo "Installing zoxide $ZOXIDE_VERSION..."
+    local name="zoxide-${ZOXIDE_VERSION}-${ARCH_ZO}"
+    local url="https://github.com/ajeetdsouza/zoxide/releases/download/v${ZOXIDE_VERSION}/${name}.tar.gz"
+    local tmp="$(mktemp -d)"
+    curl -sL "$url" | tar xz -C "$tmp"
+    mv "$tmp/zoxide" "$INSTALL_DIR/zoxide"
+    chmod +x "$INSTALL_DIR/zoxide"
+    rm -rf "$tmp"
+    echo "DONE: zoxide $ZOXIDE_VERSION -> $INSTALL_DIR/zoxide"
+}
+
 install_mise
 install_fzf
 install_ripgrep
 install_delta
 install_lazygit
+install_zoxide
 install_neovim
