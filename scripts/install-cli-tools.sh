@@ -2,16 +2,51 @@
 set -euo pipefail
 
 # Install CLI tools to ~/.local/bin (no sudo required)
-# Supports: mise, fzf, ripgrep, delta, lazygit, neovim
+# Supports: Linux (x86_64, aarch64) and macOS (x86_64, arm64)
 
 INSTALL_DIR="$HOME/.local/bin"
 mkdir -p "$INSTALL_DIR"
 
+OS="$(uname -s)"
 ARCH="$(uname -m)"
-case "$ARCH" in
-    x86_64)  ARCH_FZF="linux_amd64" ARCH_RG="x86_64-unknown-linux-musl" ARCH_DELTA="x86_64-unknown-linux-musl" ARCH_LG="Linux_x86_64" ARCH_ZO="x86_64-unknown-linux-musl" ;;
-    aarch64) ARCH_FZF="linux_arm64" ARCH_RG="aarch64-unknown-linux-gnu" ARCH_DELTA="aarch64-unknown-linux-gnu" ARCH_LG="Linux_arm64" ARCH_ZO="aarch64-unknown-linux-musl" ;;
-    *) echo "ERROR: Unsupported architecture: $ARCH"; exit 1 ;;
+
+case "${OS}_${ARCH}" in
+    Linux_x86_64)
+        ARCH_FZF="linux_amd64"
+        ARCH_RG="x86_64-unknown-linux-musl"
+        ARCH_DELTA="x86_64-unknown-linux-musl"
+        ARCH_LG="Linux_x86_64"
+        ARCH_ZO="x86_64-unknown-linux-musl"
+        ARCH_NVIM="nvim-linux-x86_64"
+        ;;
+    Linux_aarch64)
+        ARCH_FZF="linux_arm64"
+        ARCH_RG="aarch64-unknown-linux-gnu"
+        ARCH_DELTA="aarch64-unknown-linux-gnu"
+        ARCH_LG="Linux_arm64"
+        ARCH_ZO="aarch64-unknown-linux-musl"
+        ARCH_NVIM="nvim-linux-aarch64"
+        ;;
+    Darwin_x86_64)
+        ARCH_FZF="darwin_amd64"
+        ARCH_RG="x86_64-apple-darwin"
+        ARCH_DELTA="x86_64-apple-darwin"
+        ARCH_LG="Darwin_x86_64"
+        ARCH_ZO="x86_64-apple-darwin"
+        ARCH_NVIM="nvim-macos-x86_64"
+        ;;
+    Darwin_arm64)
+        ARCH_FZF="darwin_arm64"
+        ARCH_RG="aarch64-apple-darwin"
+        ARCH_DELTA="aarch64-apple-darwin"
+        ARCH_LG="Darwin_arm64"
+        ARCH_ZO="aarch64-apple-darwin"
+        ARCH_NVIM="nvim-macos-arm64"
+        ;;
+    *)
+        echo "ERROR: Unsupported platform: ${OS}_${ARCH}"
+        exit 1
+        ;;
 esac
 
 # Pinned versions
@@ -123,13 +158,11 @@ install_neovim() {
         echo "Installing neovim $NVIM_VERSION..."
     fi
     local nvim_dir="$HOME/.local/nvim"
-    local archive="nvim-linux-x86_64"
-    if [ "$ARCH" = "aarch64" ]; then archive="nvim-linux-aarch64"; fi
-    local url="https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/${archive}.tar.gz"
+    local url="https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/${ARCH_NVIM}.tar.gz"
     local tmp="$(mktemp -d)"
     curl -sL "$url" | tar xz -C "$tmp"
     rm -rf "$nvim_dir"
-    mv "$tmp/$archive" "$nvim_dir"
+    mv "$tmp/$ARCH_NVIM" "$nvim_dir"
     rm -rf "$tmp"
     ln -sf "$nvim_dir/bin/nvim" "$INSTALL_DIR/nvim"
     echo "DONE: nvim v$NVIM_VERSION -> $nvim_dir"
