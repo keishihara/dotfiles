@@ -18,6 +18,7 @@ case "${OS}_${ARCH}" in
         ARCH_LG="Linux_x86_64"
         ARCH_ZO="x86_64-unknown-linux-musl"
         ARCH_NVIM="nvim-linux-x86_64"
+        ARCH_GLOW="Linux_x86_64"
         ;;
     Linux_aarch64)
         ARCH_FZF="linux_arm64"
@@ -26,6 +27,7 @@ case "${OS}_${ARCH}" in
         ARCH_LG="Linux_arm64"
         ARCH_ZO="aarch64-unknown-linux-musl"
         ARCH_NVIM="nvim-linux-aarch64"
+        ARCH_GLOW="Linux_arm64"
         ;;
     Darwin_x86_64)
         ARCH_FZF="darwin_amd64"
@@ -34,6 +36,7 @@ case "${OS}_${ARCH}" in
         ARCH_LG="Darwin_x86_64"
         ARCH_ZO="x86_64-apple-darwin"
         ARCH_NVIM="nvim-macos-x86_64"
+        ARCH_GLOW="Darwin_x86_64"
         ;;
     Darwin_arm64)
         ARCH_FZF="darwin_arm64"
@@ -42,6 +45,7 @@ case "${OS}_${ARCH}" in
         ARCH_LG="Darwin_arm64"
         ARCH_ZO="aarch64-apple-darwin"
         ARCH_NVIM="nvim-macos-arm64"
+        ARCH_GLOW="Darwin_arm64"
         ;;
     *)
         echo "ERROR: Unsupported platform: ${OS}_${ARCH}"
@@ -56,6 +60,7 @@ DELTA_VERSION="0.18.2"
 LAZYGIT_VERSION="0.44.1"
 NVIM_VERSION="0.11.5"
 ZOXIDE_VERSION="0.9.6"
+GLOW_VERSION="2.1.2"
 
 version_ge() {
     [ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
@@ -184,10 +189,27 @@ install_zoxide() {
     echo "DONE: zoxide $ZOXIDE_VERSION -> $INSTALL_DIR/zoxide"
 }
 
+install_glow() {
+    if command -v glow &>/dev/null; then
+        echo "OK:   $(glow --version | head -1)"
+        return
+    fi
+    echo "Installing glow $GLOW_VERSION..."
+    local name="glow_${GLOW_VERSION}_${ARCH_GLOW}"
+    local url="https://github.com/charmbracelet/glow/releases/download/v${GLOW_VERSION}/${name}.tar.gz"
+    local tmp="$(mktemp -d)"
+    curl -sL "$url" | tar xz -C "$tmp"
+    mv "$tmp/$name/glow" "$INSTALL_DIR/glow"
+    chmod +x "$INSTALL_DIR/glow"
+    rm -rf "$tmp"
+    echo "DONE: glow $GLOW_VERSION -> $INSTALL_DIR/glow"
+}
+
 install_mise
 install_fzf
 install_ripgrep
 install_delta
 install_lazygit
 install_zoxide
+install_glow
 install_neovim

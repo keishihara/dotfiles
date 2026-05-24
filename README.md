@@ -8,7 +8,7 @@
 git clone https://github.com/keishihara/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ./install.sh
-./scripts/install-cli-tools.sh  # mise, fzf, ripgrep, delta, lazygit, zoxide, neovim
+./scripts/install-cli-tools.sh  # mise, fzf, ripgrep, delta, lazygit, zoxide, glow, neovim
 brew bundle --global             # macOS packages and casks from ~/.Brewfile
 ```
 
@@ -18,7 +18,7 @@ brew bundle --global             # macOS packages and casks from ~/.Brewfile
 git clone https://github.com/keishihara/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ./install.sh
-./scripts/install-cli-tools.sh  # mise, fzf, ripgrep, delta, lazygit, zoxide, neovim
+./scripts/install-cli-tools.sh  # mise, fzf, ripgrep, delta, lazygit, zoxide, glow, neovim
 ```
 
 `install.sh` creates symlinks from `$HOME` (and `~/.config/`) to the dotfiles in this repository.
@@ -80,5 +80,5 @@ Neo-tree and Telescope prompt windows otherwise use the plugins' default keybind
 
 | Script | Description |
 | --- | --- |
-| `scripts/install-cli-tools.sh` | Install mise, fzf, ripgrep, delta, lazygit, zoxide, neovim to `~/.local/bin` (no sudo) |
+| `scripts/install-cli-tools.sh` | Install mise, fzf, ripgrep, delta, lazygit, zoxide, glow, neovim to `~/.local/bin` (no sudo) |
 | `scripts/install-cursor-extensions.sh` | Install Cursor/VSCode extensions from `cursor-extensions.txt` |
