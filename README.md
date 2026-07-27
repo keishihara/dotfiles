@@ -34,7 +34,7 @@ To remove all symlinks, run `./uninstall.sh` (restores the most recent backup if
 | `.zprofile` | Zsh login shell (PATH, env vars) | macOS |
 | `.vimrc` | Vim config | All |
 | `.gitconfig` | Git config | All |
-| `.tmux.conf` | tmux config (TPM + vim-tmux-navigator) | All |
+| `.tmux.conf` | tmux config (TPM + vim-tmux-navigator, CSI-u extended keys) | All |
 | `.Brewfile` | Homebrew packages | macOS |
 | `.config/nvim/` | Neovim config (lazy.nvim) | All |
 | `.config/wezterm/` | WezTerm config | All |
@@ -75,6 +75,12 @@ Machine-specific settings go in `*.local` files (git-ignored):
 | `Space c a` | Code action |
 
 Neo-tree and Telescope prompt windows otherwise use the plugins' default keybindings.
+
+## Docs
+
+| Doc | Description |
+| --- | --- |
+| [`docs/terminal-keys.md`](docs/terminal-keys.md) | Making `Shift+Enter` reach a TUI over SSH + tmux (Cursor keybinding, `extended-keys always`, Codex keymap) |
 
 ## Scripts
 
