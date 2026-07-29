@@ -27,7 +27,9 @@ link_item() {
 }
 
 for entry in "${FILES[@]}"; do
-    link_item "$DOTFILES_DIR/${entry%%:*}" "${entry##*:}"
+    dst="${entry##*:}"
+    mkdir -p "$(dirname "$dst")"
+    link_item "$DOTFILES_DIR/${entry%%:*}" "$dst"
 done
 
 for entry in "${CONFIG_DIRS[@]}"; do
