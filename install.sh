@@ -38,6 +38,10 @@ for entry in "${CONFIG_DIRS[@]}"; do
     link_item "$DOTFILES_DIR/${entry%%:*}" "$dst"
 done
 
+python3 "$DOTFILES_DIR/scripts/install-codex-config.py" \
+    "$DOTFILES_DIR/codex/config.toml" \
+    "$HOME/.codex/config.toml"
+
 # Hint for local overrides
 echo ""
 echo "HINT: Restart your terminal or run 'source ~/.zshrc' (macOS) / 'source ~/.bashrc' (Linux) to apply."
