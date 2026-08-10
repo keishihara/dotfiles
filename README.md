@@ -23,6 +23,7 @@ cd ~/dotfiles
 
 `install.sh` creates symlinks from `$HOME` (and `~/.config/`) to the dotfiles in this repository.
 Existing files are backed up with a `.backup.<timestamp>` suffix.
+It also merges the shared Codex TUI defaults into `~/.codex/config.toml` while preserving machine-local project trust and plugin settings.
 To remove all symlinks, run `./uninstall.sh` (restores the most recent backup if available).
 
 ## Managed files
@@ -38,6 +39,8 @@ To remove all symlinks, run `./uninstall.sh` (restores the most recent backup if
 | `.Brewfile` | Homebrew packages | macOS |
 | `.config/nvim/` | Neovim config (lazy.nvim) | All |
 | `.config/wezterm/` | WezTerm config | All |
+| `~/.codex/AGENTS.md` | User-wide Codex working principles | All |
+| `~/.codex/config.toml` | Shared Codex TUI defaults merged with local settings | All |
 
 ## Local overrides
 
