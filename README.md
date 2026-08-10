@@ -89,5 +89,5 @@ Neo-tree and Telescope prompt windows otherwise use the plugins' default keybind
 
 | Script | Description |
 | --- | --- |
-| `scripts/install-cli-tools.sh` | Install mise, fzf, ripgrep, delta, lazygit, zoxide, glow, yazi, neovim to `~/.local/bin` (no sudo) |
+| `scripts/install-cli-tools.sh` | Install mise, fzf, ripgrep, delta, lazygit, zoxide, glow, neovim to `~/.local/bin` (no sudo) |
 | `scripts/install-cursor-extensions.sh` | Install Cursor/VSCode extensions from `cursor-extensions.txt` |
