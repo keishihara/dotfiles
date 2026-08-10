@@ -64,7 +64,7 @@ def main() -> None:
 
     merged = "\n".join(lines) + "\n"
     if merged == original:
-        print(f"OK:    {target_path} already contains managed Codex defaults")
+        print(f"OK:   {target_path} already contains managed Codex defaults")
         return
 
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=target_path.parent, delete=False) as handle:
