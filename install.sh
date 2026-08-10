@@ -44,7 +44,16 @@ python3 "$DOTFILES_DIR/scripts/install-codex-config.py" \
 
 # Hint for local overrides
 echo ""
-echo "HINT: Restart your terminal or run 'source ~/.zshrc' (macOS) / 'source ~/.bashrc' (Linux) to apply."
+case "$(basename "${SHELL:-}")" in
+    zsh)  shell_rc="~/.zshrc" ;;
+    bash) shell_rc="~/.bashrc" ;;
+    *)    shell_rc="" ;;
+esac
+if [ -n "$shell_rc" ]; then
+    echo "HINT: Restart your terminal or run 'source $shell_rc' to apply."
+else
+    echo "HINT: Restart your terminal (or reload your shell config) to apply."
+fi
 if [ ! -f "$HOME/.bashrc.local" ]; then
     echo "HINT: ~/.bashrc.local not found. Create one for machine-specific settings."
     echo "  See README.md for details."
